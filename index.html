@@ -1216,9 +1216,9 @@ $('cfgTest').onclick=async()=>{
   if(!c.url||!c.model||!c.key){ $('cfgState').className='mstate fb'; $('cfgState').textContent='三项都要填。'; return }
   $('cfgState').className='mstate'; $('cfgState').textContent='正在连接…';
   try{
-    const r = await rawChat(c, [{role:'user',content:'只回复两个字：可用'}], 64);
+    const r = await rawChat(c, [{role:'user',content:'只回复两个字：可用'}], 2000);
     $('cfgState').className='mstate live';
-    $('cfgState').textContent='连接成功，模型回了：'+String(r).slice(0,40);
+    $('cfgState').textContent='连接成功，模型回了：'+String(r.content||r.reasoning||'(空)').slice(0,40);
   }catch(e){
     $('cfgState').className='mstate fb';
     $('cfgState').textContent='连接失败：'+(e&&e.message?e.message:'未知错误');
@@ -1247,12 +1247,15 @@ async function rawChat(c, messages, maxTokens, modelOverride, wantJSON){
     throw new Error('HTTP '+res.status+(t?(' · '+t):''));
   }
   const j = await res.json();
-  const msg = j && j.choices && j.choices[0] && j.choices[0].message;
-  /* 有些模型把思考过程放 reasoning_content，答案仍在 content */
-  let out = (msg && (msg.content || msg.reasoning_content)) || '';
-  if(!out && j && j.choices && j.choices[0] && j.choices[0].text) out = j.choices[0].text;
-  if(!out) throw new Error('接口返回里没有文字内容：'+JSON.stringify(j).slice(0,160));
-  return out;
+  const ch = (j && j.choices && j.choices[0]) || {};
+  const msg = ch.message || {};
+  /* 推理模型把思考放 reasoning_content、答案放 content。
+     绝不能拿思考过程当答案 —— 之前就是这里读错了字段。*/
+  return {
+    content: (msg.content || ch.text || '').trim(),
+    reasoning: (msg.reasoning_content || '').trim(),
+    truncated: ch.finish_reason === 'length'
+  };
 }
 function grabJSON(txt){
   if(!txt) return null;
@@ -1297,20 +1300,44 @@ const JSON_SYS = '你是一个只输出 JSON 的接口。无论问题是什么�
   + '禁止输出任何解释、思考过程、开场白、markdown 代码围栏。禁止用 "Let me" 或 "好的" 之类的话开头。'
   + 'JSON 里所有中文字段（比如 why）必须用简体中文填写。';
 
-/* 拿 JSON：先正常问；模型没照做就把它的错误答案回敬给它，要求重出一次 */
+/* 拿 JSON。推理模型会先烧 token 思考，所以预算给足，并且只认 content。*/
 async function chatJSON(messages, model){
   const msgs = [{role:'system', content:JSON_SYS}].concat(messages);
-  const txt = await rawChat(cfg, msgs, 1400, model, true);
-  let j = grabJSON(txt);
+
+  let r = await rawChat(cfg, msgs, 3000, model, true);
+  let j = grabJSON(r.content);
   if(j) return j;
-  const fix = msgs.concat([
-    {role:'assistant', content:String(txt).slice(0,600)},
-    {role:'user', content:'你刚才没有只返回 JSON。现在重新回答：只输出那个 JSON 对象本身，第一个字符是 {，最后一个字符是 }，不要任何其他文字。'}
-  ]);
-  const txt2 = await rawChat(cfg, fix, 1400, model, true);
-  j = grabJSON(txt2);
+
+  /* 只有思考没有答案 = 预算被思考吃光了，加大预算再来一次 */
+  if(!r.content && (r.reasoning || r.truncated)){
+    r = await rawChat(cfg, msgs, 8000, model, true);
+    j = grabJSON(r.content);
+    if(j) return j;
+  }
+
+  /* 把它的错误输出回敬给它，要求重出。只回敬 content，不回敬思考过程 */
+  const bad = r.content || '';
+  if(bad){
+    const fix = msgs.concat([
+      {role:'assistant', content:bad.slice(0,600)},
+      {role:'user', content:'你刚才没有只返回 JSON。现在重新回答：只输出那个 JSON 对象本身，第一个字符是 {，最后一个字符是 }，不要任何其他文字，不要写思考过程。'}
+    ]);
+    const r2 = await rawChat(cfg, fix, 8000, model, true);
+    j = grabJSON(r2.content);
+    if(j) return j;
+    r = r2;
+  }
+
+  /* 最后兜底：有的模型会把 JSON 写在思考的结尾 */
+  j = grabJSON(r.reasoning);
   if(j) return j;
-  throw notJSON(txt2 || txt);
+
+  if(!r.content && r.reasoning)
+    throw new Error('模型只输出了思考过程，没有给出答案（可能是 token 预算被思考吃光）。它的思考开头是：「'
+      + r.reasoning.replace(/\s+/g,' ').slice(0,80) + '…」');
+  if(r.truncated)
+    throw new Error('模型的回答被长度限制截断了，没形成完整 JSON。');
+  throw notJSON(r.content);
 }
 
 function notJSON(txt){
