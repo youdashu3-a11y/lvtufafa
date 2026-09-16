@@ -1,0 +1,1515 @@
+<meta charset="utf-8">
+<title>旅图发发</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ink:#2B2833;
+  --ink2:#6E6879;
+  --ink3:#9D97A8;
+  --glass:rgba(255,255,255,.66);
+  --glass2:rgba(255,255,255,.44);
+  --edge:rgba(255,255,255,.78);
+  --line:rgba(120,100,150,.14);
+  --line2:rgba(120,100,150,.26);
+  --plum:#8B6FD4;
+  --plum-deep:#6A4CB8;
+  --plum-soft:rgba(160,132,232,.16);
+  --rose:#E2789A;
+  --rose-soft:rgba(226,120,154,.16);
+  --pink:#C98CD4;
+  --pink-soft:rgba(201,140,212,.16);
+  --soft:0 10px 30px -14px rgba(90,64,140,.34);
+  --soft2:0 18px 44px -18px rgba(90,64,140,.40);
+  --font:"Hanken Grotesk","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"JetBrains Mono","PingFang SC",ui-monospace,monospace;
+  --ground:rgba(248,246,251,.94);
+  --wash:
+    radial-gradient(120% 78% at 8% 0%,   #FCE7F1 0%, rgba(252,231,241,0) 56%),
+    radial-gradient(105% 70% at 98% 10%, #E6E2FB 0%, rgba(230,226,251,0) 60%),
+    radial-gradient(115% 85% at 88% 100%,#DDF2EA 0%, rgba(221,242,234,0) 58%),
+    radial-gradient(95% 62% at 12% 98%,  #FBF3E2 0%, rgba(251,243,226,0) 62%),
+    #F8F6FB;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --ink:#F0EBF7; --ink2:#B5ACC4; --ink3:#837A94;
+  --glass:rgba(48,40,64,.62); --glass2:rgba(48,40,64,.40); --edge:rgba(255,255,255,.10);
+  --line:rgba(255,255,255,.10); --line2:rgba(255,255,255,.20);
+  --plum:#B49BF0; --plum-deep:#C9B6FA; --plum-soft:rgba(180,155,240,.18);
+  --rose:#F0A0B8; --rose-soft:rgba(240,160,184,.16);
+  --pink:#DFA5E6; --pink-soft:rgba(223,165,230,.16);
+  --soft:0 10px 30px -14px rgba(0,0,0,.6); --soft2:0 18px 44px -18px rgba(0,0,0,.7);
+  --ground:rgba(25,21,33,.94);
+  --wash:
+    radial-gradient(120% 78% at 8% 0%,   #3A2740 0%, rgba(58,39,64,0) 56%),
+    radial-gradient(105% 70% at 98% 10%, #2B2A50 0%, rgba(43,42,80,0) 60%),
+    radial-gradient(115% 85% at 88% 100%,#1F3A36 0%, rgba(31,58,54,0) 58%),
+    radial-gradient(95% 62% at 12% 98%,  #35301F 0%, rgba(53,48,31,0) 62%),
+    #191521;
+}}
+:root[data-theme="dark"]{
+  --ink:#F0EBF7; --ink2:#B5ACC4; --ink3:#837A94;
+  --glass:rgba(48,40,64,.62); --glass2:rgba(48,40,64,.40); --edge:rgba(255,255,255,.10);
+  --line:rgba(255,255,255,.10); --line2:rgba(255,255,255,.20);
+  --plum:#B49BF0; --plum-deep:#C9B6FA; --plum-soft:rgba(180,155,240,.18);
+  --rose:#F0A0B8; --rose-soft:rgba(240,160,184,.16);
+  --pink:#DFA5E6; --pink-soft:rgba(223,165,230,.16);
+  --soft:0 10px 30px -14px rgba(0,0,0,.6); --soft2:0 18px 44px -18px rgba(0,0,0,.7);
+  --ground:rgba(25,21,33,.94);
+  --wash:
+    radial-gradient(120% 78% at 8% 0%,   #3A2740 0%, rgba(58,39,64,0) 56%),
+    radial-gradient(105% 70% at 98% 10%, #2B2A50 0%, rgba(43,42,80,0) 60%),
+    radial-gradient(115% 85% at 88% 100%,#1F3A36 0%, rgba(31,58,54,0) 58%),
+    radial-gradient(95% 62% at 12% 98%,  #35301F 0%, rgba(53,48,31,0) 62%),
+    #191521;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--wash);background-attachment:fixed;color:var(--ink2);font-family:var(--font);
+  font-size:14.5px;line-height:1.6;font-weight:400;letter-spacing:-.008em;-webkit-font-smoothing:antialiased;overflow:hidden}
+.app{max-width:460px;margin:0 auto;height:100%;display:flex;flex-direction:column;position:relative;background:var(--wash)}
+
+/* 顶栏：无边框，悬浮 */
+.bar{flex:0 0 auto;display:flex;align-items:center;gap:10px;justify-content:space-between;
+  padding:14px 20px 10px;position:relative;z-index:6}
+.bar::after{display:none}
+.bar .gear{background:var(--glass);border:1px solid var(--edge);color:var(--plum-deep);cursor:pointer;
+  width:36px;height:36px;border-radius:50%;display:grid;place-items:center;padding:0;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--soft)}
+.bar .back{background:var(--glass);border:1px solid var(--edge);color:var(--plum-deep);font-size:17px;cursor:pointer;
+  width:36px;height:36px;border-radius:50%;line-height:1;font-weight:600;display:grid;place-items:center;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--soft);padding:0}
+.bar .ttl{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.024em;flex:1}
+
+.body{flex:1;overflow-y:auto;padding:0 20px 120px;-webkit-overflow-scrolling:touch}
+.body::-webkit-scrollbar{width:0}
+.scr{display:none}
+.scr.live{display:block;animation:fade .3s cubic-bezier(.2,.7,.3,1)}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.scr.live{animation:none}}
+
+.dock{position:absolute;left:0;right:0;bottom:0;padding:14px 20px calc(18px + env(safe-area-inset-bottom,0px));
+  display:flex;gap:9px;align-items:center;z-index:5;
+  background:linear-gradient(to top,var(--ground) 55%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.btn{flex:1;border:1px solid var(--edge);border-radius:999px;padding:16px;font-family:var(--font);font-size:15.5px;
+  font-weight:600;cursor:pointer;letter-spacing:-.016em;transition:transform .14s,box-shadow .14s}
+.btn:active{transform:scale(.978)}
+.btn.primary{color:#fff;border-color:transparent;
+  background:linear-gradient(118deg,#A886E8,#C98CD4 52%,#E9A6BE);
+  box-shadow:0 10px 26px -10px rgba(150,110,220,.75)}
+.btn.primary:disabled{background:var(--glass2);color:var(--ink3);box-shadow:none;border-color:var(--edge)}
+.btn.ghost{flex:0 0 auto;background:var(--glass);color:var(--ink2);font-weight:500;font-size:14px;padding:15px 20px;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--soft)}
+.btn:focus-visible,.tile:focus-visible,.lnk:focus-visible,.chip:focus-visible{outline:2px solid var(--plum);outline-offset:3px}
+
+h2{font-size:28px;font-weight:700;color:var(--ink);margin:18px 0 12px;line-height:1.16;letter-spacing:-.034em;text-wrap:balance}
+h2 .dim{color:var(--ink3);font-weight:700}
+.sub{font-size:13.6px;color:var(--ink2);line-height:1.66;margin:0 0 18px}
+.eyebrow{font-size:11.5px;letter-spacing:0;text-transform:none;color:var(--ink3);font-family:var(--font);
+  margin:26px 0 10px;display:flex;justify-content:space-between;align-items:baseline;font-weight:600}
+.eyebrow b{color:var(--plum);font-weight:600}
+.card{border:1px solid var(--edge);border-radius:22px;padding:18px;background:var(--glass);
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:var(--soft)}
+.note{font-size:12.4px;color:var(--ink3);line-height:1.6;margin:12px 0 0}
+.lnk{color:var(--plum-deep);background:none;border:0;font-size:13.5px;cursor:pointer;padding:0;
+  font-family:var(--font);font-weight:600}
+.big{font-family:var(--font);font-size:60px;color:var(--ink);font-weight:700;letter-spacing:-.05em;line-height:1}
+
+/* 标识 */
+.hero{display:grid;place-items:center;padding:16px 0 4px}
+.logo{width:116px;height:116px;display:block;animation:float 6s ease-in-out infinite;
+  filter:drop-shadow(0 16px 26px rgba(120,90,180,.28))}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@media (prefers-reduced-motion:reduce){.logo{animation:none}}
+.brandrow{display:flex;align-items:center;justify-content:center;margin:12px 0 28px}
+.brandrow b{font-size:17px;color:var(--ink);font-weight:700;letter-spacing:-.024em}
+
+/* 步骤条 —— 不是卡片，不可点，只说明顺序 */
+.flowbar{display:flex;align-items:flex-start;margin:2px 0 26px;padding:0;list-style:none}
+.flowbar li{flex:1;position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px}
+.flowbar li::before{content:"";position:absolute;top:11px;left:-50%;width:100%;height:1px;
+  background:var(--line2);opacity:.6}
+.flowbar li:first-child::before{display:none}
+.flowbar .n{width:23px;height:23px;border-radius:50%;background:var(--plum-soft);color:var(--plum-deep);
+  font-family:var(--mono);font-size:11px;display:grid;place-items:center;position:relative;z-index:1;font-weight:500}
+.flowbar .t{font-size:11.5px;color:var(--ink3);line-height:1.35;letter-spacing:-.01em}
+
+/* 选照片入口 */
+.drop{border:1px solid var(--edge);border-radius:24px;padding:30px 20px;text-align:center;cursor:pointer;display:block;
+  margin-bottom:6px;
+  background:linear-gradient(140deg,rgba(207,186,242,.30),rgba(245,201,228,.24) 48%,rgba(217,241,228,.28));
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:var(--soft2)}
+.drop b{display:block;color:var(--ink);font-size:18px;font-weight:700;margin-bottom:6px;letter-spacing:-.026em}
+.drop span{font-size:12.8px;color:var(--ink2)}
+input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.steps{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.stp{display:flex;gap:12px;font-size:12.8px;color:var(--ink2);align-items:flex-start;line-height:1.55;
+  background:var(--glass2);border:1px solid var(--edge);border-radius:16px;padding:12px 14px;
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.stp .n{flex:0 0 22px;height:22px;border-radius:50%;background:var(--plum-soft);color:var(--plum-deep);
+  font-family:var(--mono);font-size:10px;display:grid;place-items:center;font-weight:500}
+.stp b{color:var(--ink);font-weight:600}
+
+/* 分组 */
+.grouphd{display:flex;justify-content:space-between;align-items:baseline;margin:24px 0 11px;padding:0}
+.grouphd .t{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.026em}
+.grouphd .c{font-family:var(--mono);font-size:11px;color:var(--plum);font-weight:500;
+  background:var(--plum-soft);padding:4px 10px;border-radius:999px}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.tile{position:relative;aspect-ratio:1/1;border-radius:14px;overflow:hidden;border:2px solid transparent;
+  cursor:pointer;background:var(--glass2);padding:0;transition:border-color .16s,opacity .16s,transform .14s;
+  box-shadow:var(--soft)}
+.tile:active{transform:scale(.94)}
+.tile canvas,.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile.on{border-color:var(--plum)}
+.tile.muted{opacity:.45}
+.tile .no{position:absolute;right:5px;top:5px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;
+  background:rgba(255,255,255,.88);display:grid;place-items:center;font-family:var(--mono);font-size:9.5px;
+  color:var(--ink2);font-weight:500;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.tile.on .no{background:var(--plum);color:#fff}
+.tile .why{position:absolute;left:0;right:0;bottom:0;background:rgba(226,120,154,.92);color:#fff;
+  font-size:8.5px;padding:3px;font-family:var(--mono);text-align:center}
+.droprow{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px}
+.droprow .t2{flex:0 0 52px;position:relative}
+.droprow canvas{width:52px;height:52px;object-fit:cover;border-radius:12px;filter:grayscale(.85) brightness(.98);display:block}
+.droprow .t2 span{position:absolute;left:0;right:0;bottom:0;font-family:var(--mono);font-size:7.5px;
+  background:rgba(226,120,154,.92);color:#fff;text-align:center;border-radius:0 0 11px 11px}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.chip{background:var(--rose-soft);border:1px solid transparent;color:var(--rose);font-size:11.5px;padding:6px 12px;
+  border-radius:999px;font-family:var(--mono);font-weight:500}
+.chip.act{cursor:pointer;color:var(--ink2);background:var(--glass);border-color:var(--edge);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-family:var(--font);font-size:12.5px}
+.chip.act[aria-pressed="true"]{background:linear-gradient(118deg,#A886E8,#C98CD4);border-color:transparent;color:#fff}
+
+/* 档案 */
+.facewrap{display:flex;gap:16px;align-items:flex-start}
+.facebig{flex:0 0 132px;height:132px;border-radius:22px;overflow:hidden;border:1px solid var(--edge);
+  position:relative;background:var(--glass2);box-shadow:var(--soft2)}
+.facebig canvas{width:100%;height:100%;display:block}
+.sliders{flex:1;display:flex;flex-direction:column;gap:16px;min-width:0}
+.sld label{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink2);margin-bottom:8px;font-weight:500}
+.sld label b{font-family:var(--mono);color:var(--plum-deep);font-weight:500;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:5px;border-radius:999px;
+  background:var(--plum-soft);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:linear-gradient(140deg,#CFBAF2,#F5C9E4);border:2.5px solid #fff;box-shadow:0 3px 9px rgba(120,90,180,.45)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;
+  background:linear-gradient(140deg,#CFBAF2,#F5C9E4);border:2.5px solid #fff;box-shadow:0 3px 9px rgba(120,90,180,.45)}
+.lockbar{margin-top:20px;border:1px solid var(--edge);border-radius:20px;padding:15px 16px;font-size:12.8px;
+  color:var(--ink2);line-height:1.6;background:linear-gradient(130deg,rgba(207,186,242,.26),rgba(245,201,228,.20));
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.lockbar b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:4px;font-weight:700;letter-spacing:-.018em}
+
+/* 对比 */
+.cmp{position:relative;border-radius:24px;overflow:hidden;border:1px solid var(--edge);aspect-ratio:1/1;
+  touch-action:none;cursor:crosshair;box-shadow:var(--soft2)}
+.cmp canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.cmp .aft{clip-path:inset(0 0 0 var(--cut,50%))}
+.cmp .bar2{position:absolute;top:0;bottom:0;left:var(--cut,50%);width:2px;background:rgba(255,255,255,.92);z-index:5;
+  pointer-events:none;box-shadow:0 0 10px rgba(90,64,140,.4)}
+.cmp .bar2::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;
+  border-radius:50%;background:rgba(255,255,255,.94);box-shadow:0 4px 14px rgba(90,64,140,.35);
+  border:2px solid rgba(255,255,255,.9)}
+.cmp .lb{position:absolute;bottom:12px;font-size:10.5px;padding:6px 12px;border-radius:999px;
+  background:rgba(255,255,255,.8);color:var(--ink2);z-index:6;pointer-events:none;font-weight:600;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.cmp .lb.l{left:12px}
+.cmp .lb.r{right:12px;background:linear-gradient(118deg,#A886E8,#C98CD4);color:#fff}
+.cmp .ring{position:absolute;border:2px dashed rgba(255,255,255,.92);border-radius:50%;pointer-events:none;z-index:4}
+.cmprange{width:100%;margin-top:18px}
+.tabs{display:flex;gap:7px;margin:16px 0 14px;overflow-x:auto;padding-bottom:2px}
+.tab{flex:1 0 auto;background:var(--glass);border:2px solid transparent;border-radius:16px;padding:7px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--ink3);font-family:var(--mono);font-size:10px;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--soft)}
+.tab[aria-pressed="true"]{border-color:var(--plum);color:var(--plum-deep);font-weight:500}
+.tab canvas{width:40px;height:40px;border-radius:11px;display:block}
+.consist{margin-top:18px;border:1px solid var(--edge);border-radius:22px;padding:16px;background:var(--glass);
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:var(--soft)}
+.crow{display:flex;gap:8px;align-items:center;font-family:var(--mono);font-size:11px;padding:9px 0;
+  border-bottom:1px solid var(--line)}
+.crow:last-child{border-bottom:0}
+.crow .nm{flex:1;font-family:var(--font);font-size:12.5px;color:var(--ink2)}
+.crow .vv{color:var(--plum-deep);font-variant-numeric:tabular-nums;min-width:26px;text-align:right;font-weight:500}
+.crow.hd{color:var(--ink3)}
+
+/* 输入 / 成片 */
+.say{width:100%;background:var(--glass);border:1px solid var(--edge);border-radius:22px;color:var(--ink);
+  font-family:var(--font);font-size:16.5px;padding:17px;min-height:104px;resize:none;line-height:1.55;font-weight:400;
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--soft)}
+.say::placeholder{color:var(--ink3)}
+.say:focus{outline:none;border-color:var(--plum)}
+.inp{width:100%;background:var(--glass);border:1px solid var(--edge);border-radius:999px;color:var(--ink);
+  font-family:var(--font);font-size:15.5px;padding:15px 20px;font-weight:400;
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--soft)}
+.inp:focus{outline:none;border-color:var(--plum)}
+.grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:16px;overflow:hidden}
+.grid6 canvas,.grid6 img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.preview{border:1px solid var(--edge);border-radius:26px;padding:18px;background:var(--glass);
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:var(--soft2)}
+.pvhead{display:flex;gap:11px;align-items:center;margin-bottom:13px}
+.avatar{width:42px;height:42px;border-radius:50%;overflow:hidden;flex:0 0 42px;background:var(--glass2);
+  border:2px solid var(--edge)}
+.avatar canvas{width:100%;height:100%;display:block}
+.pvhead b{font-size:14.5px;display:block;font-weight:700;color:var(--ink);letter-spacing:-.02em}
+.pvhead span{font-size:11px;color:var(--ink3)}
+.copy{font-size:16px;line-height:1.7;margin:0 0 14px;white-space:pre-wrap;word-break:break-word;color:var(--ink);
+  font-weight:400;letter-spacing:-.014em;outline:none;border-radius:10px;padding:2px 4px;margin-left:-4px;
+  transition:background .15s}
+.copy:focus{background:var(--plum-soft)}
+.copy:empty::before{content:attr(data-ph);color:var(--ink3)}
+.alts{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.alt{text-align:left;background:var(--glass);border:1.5px solid var(--edge);border-radius:18px;padding:14px 16px;
+  color:var(--ink2);font-size:13.5px;line-height:1.6;cursor:pointer;font-family:var(--font);font-weight:400;width:100%;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--soft)}
+.alt[aria-pressed="true"]{border-color:var(--plum);color:var(--ink)}
+.alt em{display:block;font-style:normal;font-size:11px;color:var(--plum);margin-bottom:5px;font-weight:600}
+.aibar{margin-top:14px;display:flex;align-items:center;gap:9px;font-size:12px;padding:10px 14px;
+  border-radius:999px;border:1px solid var(--edge);background:var(--glass);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:var(--ink2)}
+.aibar .tag{flex:0 0 auto;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;
+  font-size:10px;font-weight:700;color:#fff;background:var(--plum)}
+.aibar.fb{border-color:var(--rose)}
+.aibar.fb .tag{background:var(--rose)}
+.aibar b{color:var(--ink);font-weight:600}
+.mstate{font-size:11.5px;color:var(--ink3);margin-top:12px;text-align:left}
+.mstate.live{color:var(--plum)}.mstate.fb{color:var(--rose)}
+
+/* 发布 */
+.saverow{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:12px}
+.saverow figure{margin:0}
+.saverow img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:18px;display:block;box-shadow:var(--soft)}
+.saverow figcaption{font-size:10.5px;color:var(--ink3);margin-top:6px;text-align:center}
+.hand{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+.hand .h{display:flex;gap:13px;align-items:flex-start;border:1px solid var(--edge);border-radius:20px;padding:15px;
+  background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--soft)}
+.hand .n{flex:0 0 26px;height:26px;border-radius:50%;background:linear-gradient(140deg,#CFBAF2,#F5C9E4);
+  color:var(--plum-deep);font-family:var(--mono);font-size:11px;display:grid;place-items:center;font-weight:500}
+.hand b{font-size:14px;display:block;margin-bottom:3px;font-weight:600;color:var(--ink);letter-spacing:-.018em}
+.hand p{margin:0;font-size:12.2px;color:var(--ink3);line-height:1.55}
+.switchrow{display:flex;gap:14px;align-items:flex-start;margin-top:18px;border:1px solid var(--edge);
+  border-radius:20px;padding:15px 16px;background:var(--glass);cursor:pointer;
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--soft)}
+.switchrow b{display:block;color:var(--ink);font-size:13.5px;font-weight:700;margin-bottom:4px;letter-spacing:-.018em}
+.switchrow span:not(.sw){font-size:12.2px;color:var(--ink2);line-height:1.58}
+.switchrow input{position:absolute;opacity:0;width:0;height:0}
+.switchrow .sw{flex:0 0 46px;height:27px;border-radius:999px;background:var(--surface2,rgba(120,100,150,.18));
+  position:relative;transition:background .18s;margin-top:2px}
+.switchrow .sw::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 4px rgba(60,40,90,.35);transition:transform .18s}
+.switchrow input:checked ~ .sw{background:linear-gradient(118deg,#A886E8,#C98CD4)}
+.switchrow input:checked ~ .sw::after{transform:translateX(19px)}
+details summary::-webkit-details-marker{display:none}
+details summary{list-style:none;padding:12px 0;font-size:12.5px;color:var(--plum-deep);cursor:pointer;font-weight:600}
+
+/* 处理中 */
+.prog{height:6px;background:var(--plum-soft);position:relative;margin:28px 0 18px;border-radius:999px;overflow:hidden}
+.prog i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;
+  background:linear-gradient(90deg,#A886E8,#C98CD4,#E9A6BE);width:0%;transition:width .3s}
+.busy{text-align:center;padding-top:52px}
+.busy .ln{width:104px;height:104px;margin:0 auto 26px;border-radius:50%;
+  background:
+    radial-gradient(58% 52% at 30% 24%, rgba(255,255,255,.96) 0%, rgba(255,255,255,0) 62%),
+    conic-gradient(from 205deg,#CFBAF2,#F5C9E4,#C4E6F2,#D9F1E4,#F8E6CC,#CFBAF2);
+  box-shadow:inset -14px -16px 30px rgba(120,90,180,.32),inset 10px 12px 24px rgba(255,255,255,.7),
+    0 18px 36px -16px rgba(120,90,180,.55);
+  animation:spin 5s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.busy .ln{animation:none}}
+</style>
+
+<div class="app">
+  <div class="bar">
+    <button class="back" id="back" hidden aria-label="返回">‹</button>
+    <div class="ttl" id="ttl">旅图发发</div>
+    <button class="gear" id="toCfg" aria-label="AI 设置">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+        <circle cx="12" cy="12" r="3.2"/>
+        <path d="M12 2.6v2.4M12 19v2.4M21.4 12H19M5 12H2.6M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7M18.6 18.6l-1.7-1.7M7.1 7.1L5.4 5.4"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="body" id="scroll">
+
+    <!-- 0 START -->
+    <section class="scr live" id="s-start">
+      <div class="hero"><svg class="logo" viewBox="0 0 134 118" role="img" aria-label="旅图发发">
+  <defs>
+    <radialGradient id="lgA" cx="24%" cy="16%" r="72%">
+      <stop offset="0" stop-color="#FBD3E7"/><stop offset="1" stop-color="#FBD3E7" stop-opacity="0"/></radialGradient>
+    <radialGradient id="lgB" cx="70%" cy="18%" r="66%">
+      <stop offset="0" stop-color="#B4E3F4"/><stop offset="1" stop-color="#B4E3F4" stop-opacity="0"/></radialGradient>
+    <radialGradient id="lgC" cx="92%" cy="52%" r="62%">
+      <stop offset="0" stop-color="#FBEBB4"/><stop offset="1" stop-color="#FBEBB4" stop-opacity="0"/></radialGradient>
+    <radialGradient id="lgD" cx="12%" cy="72%" r="70%">
+      <stop offset="0" stop-color="#B7A8F0"/><stop offset="1" stop-color="#B7A8F0" stop-opacity="0"/></radialGradient>
+    <radialGradient id="lgE" cx="56%" cy="98%" r="62%">
+      <stop offset="0" stop-color="#F8C6DE"/><stop offset="1" stop-color="#F8C6DE" stop-opacity="0"/></radialGradient>
+    <radialGradient id="lgF" cx="50%" cy="46%" r="60%">
+      <stop offset="0" stop-color="#D8F2E4"/><stop offset="1" stop-color="#D8F2E4" stop-opacity="0"/></radialGradient>
+    <linearGradient id="lgP" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A493E4"/><stop offset="1" stop-color="#8A79D2"/></linearGradient>
+    <clipPath id="lgBall"><circle cx="54" cy="60" r="52"/></clipPath>
+  </defs>
+
+  <circle cx="54" cy="60" r="52" fill="#E4EEF2"/>
+  <g clip-path="url(#lgBall)">
+    <circle cx="54" cy="60" r="52" fill="url(#lgA)"/>
+    <circle cx="54" cy="60" r="52" fill="url(#lgB)"/>
+    <circle cx="54" cy="60" r="52" fill="url(#lgC)"/>
+    <circle cx="54" cy="60" r="52" fill="url(#lgD)"/>
+    <circle cx="54" cy="60" r="52" fill="url(#lgE)"/>
+    <circle cx="54" cy="60" r="52" fill="url(#lgF)"/>
+    <path d="M-10 106 C 12 66, 38 64, 62 78 C 76 86, 88 84, 101 76"
+          fill="none" stroke="#AFD8F2" stroke-width="13" stroke-linecap="round" opacity=".85"/>
+    <path d="M-12 86 C 8 46, 34 44, 58 58 C 72 66, 86 64, 101 56"
+          fill="none" stroke="#FFFFFF" stroke-width="15" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(84,42) rotate(-34) scale(1.3)" fill="url(#lgP)">
+    <path d="M34 14 L27 11.6 L23.4 11.1 L19.6 1.6 L15.8 1.6 L17.8 11 L10.4 11.2
+             L6.6 5.6 L3.8 5.6 L5.4 11.6 L1.6 12.9 L1.6 15.1 L5.4 16.4 L3.8 22.4
+             L6.6 22.4 L10.4 16.8 L17.8 17 L15.8 26.4 L19.6 26.4 L23.4 16.9 L27 16.4 Z"/>
+  </g>
+</svg></div>
+
+      <div class="brandrow"><b>旅图发发</b></div>
+
+      <ol class="flowbar">
+        <li><span class="n">1</span><span class="t">选照片</span></li>
+        <li><span class="n">2</span><span class="t">AI 挑图<br>并调参</span></li>
+        <li><span class="n">3</span><span class="t">配一句话</span></li>
+        <li><span class="n">4</span><span class="t">存回相册</span></li>
+      </ol>
+
+      <label class="drop" for="pick">
+        <b>从相册选照片</b>
+        <span>选今天拍的 10–40 张，我来挑、来修</span>
+      </label>
+      <input type="file" id="pick" accept="image/*" multiple>
+
+      <div class="eyebrow">你的脸部档案</div>
+      <div class="card">
+        <div id="profSummary" class="sub" style="margin:0"></div>
+        <button class="lnk" id="toProfile" style="margin-top:10px">调整档案</button>
+      </div>
+
+      <div class="eyebrow">装到手机桌面</div>
+      <div class="steps">
+        <div class="stp"><span class="n">1</span><span><b>iPhone：</b>Safari 打开这个链接 → 底部分享按钮 → 「加入主画面 / 添加到主屏幕」</span></div>
+        <div class="stp"><span class="n">2</span><span><b>安卓：</b>Chrome 右上角菜单 → 「添加到主屏幕」</span></div>
+        <div class="stp"><span class="n">3</span><span>之后点桌面图标直接进，和 App 一样。<b>照片和脸部档案只存在这台手机上</b>，不上传。</span></div>
+      </div>
+      <p class="note">这是一个网页应用。所有图像处理都在你手机的浏览器里完成，照片不会离开设备；只有你写的那句话和地点会发给模型写文案。</p>
+    </section>
+
+    <!-- 0b SETTINGS -->
+    <section class="scr" id="s-cfg">
+      <h2>接上你自己的模型</h2>
+      <p class="sub">填一个与 OpenAI 请求格式兼容的服务（DeepSeek、通义、Kimi、自建网关都行）。<b style="color:var(--ink)">只有文字会发给它</b>：照片、人脸、美颜参数永远留在这台手机上。</p>
+
+      <div class="eyebrow">接口地址</div>
+      <input class="inp" id="cfgUrl" placeholder="https://api.deepseek.com/chat/completions" autocomplete="off" spellcheck="false">
+      <div class="eyebrow">模型名称</div>
+      <input class="inp" id="cfgModel" placeholder="deepseek-chat" autocomplete="off" spellcheck="false">
+      <div class="eyebrow">API Key <b>仅保存在当前设备</b></div>
+      <input class="inp" id="cfgKey" type="password" placeholder="请输入 API Key" autocomplete="off" spellcheck="false">
+
+      <div class="eyebrow">看图模型 <b>留空则用上面那个</b></div>
+      <input class="inp" id="cfgVModel" placeholder="支持图片输入的模型名" autocomplete="off" spellcheck="false">
+
+      <label class="switchrow" for="cfgVision">
+        <div>
+          <b>让 AI 看照片再挑</b>
+          <span id="visionHint">开启后，挑图时会上传 <b>256px 缩略图</b>（每张几十 KB）。原图、人脸数据、美颜渲染始终留在本机。</span>
+        </div>
+        <input type="checkbox" id="cfgVision">
+        <span class="sw"></span>
+      </label>
+
+      <div id="cfgState" class="mstate" style="text-align:left"></div>
+
+      <div class="card" style="margin-top:18px">
+        <div style="font-size:13px;color:var(--ink);font-weight:600;margin-bottom:8px">AI 在这个 App 里做两件事</div>
+        <div class="stp" style="background:none;border:0;padding:0;margin-bottom:10px">
+          <span class="n">1</span><span><b>挑图与调参</b>：把每张照片的清晰度、亮度、肤色占比等<b>数字</b>发给模型，它回答选哪几张、磨皮瘦脸提亮各调到多少。渲染在手机本地完成。</span>
+        </div>
+        <div class="stp" style="background:none;border:0;padding:0">
+          <span class="n">2</span><span><b>写文案</b>：把地点和你说的那句话发给模型，它回三个版本。</span>
+        </div>
+        <p class="note">不填也能用：会走内置模型，再不行就用本地模板，离线可用。</p>
+      </div>
+
+      <div class="dock">
+        <button class="btn ghost" id="cfgTest">测试连接</button>
+        <button class="btn primary" id="cfgSave">保存配置</button>
+      </div>
+    </section>
+
+    <!-- 1 PROFILE -->
+    <section class="scr" id="s-profile">
+      <h2>先把你的脸定下来，只定这一次</h2>
+      <p class="sub">这套参数会套用到之后每一张照片，直到你改它。存在这台手机上，换设备要重建。</p>
+
+      <div class="eyebrow">人像 <b>只作用在脸上</b></div>
+      <div class="facewrap">
+        <div class="facebig"><canvas id="profCv" width="272" height="272"></canvas></div>
+        <div class="sliders" id="sliders"></div>
+      </div>
+      <p class="note">磨皮、瘦脸只会落在你点过的那张脸的位置上，画面里其他人和背景一律不动。</p>
+
+      <div class="eyebrow">风景 <b>不碰磨皮瘦脸</b></div>
+      <div class="facewrap">
+        <div class="facebig"><canvas id="landCv" width="272" height="272"></canvas></div>
+        <div class="sliders" id="landSliders"></div>
+      </div>
+      <p class="note">风景只调曝光和色彩，目的是让六张看起来像同一天同一台相机拍的——九宫格的违和感来自色温不一致，不是来自不够好看。</p>
+
+      <div class="lockbar" id="lockNote">
+        <b>锁定后不再逐张变动</b>
+        人像套同一套脸参数，风景套同一套光色参数。这是旅图发发和修图工具唯一的结构差别。
+      </div>
+      <div class="dock"><button class="btn primary" id="lockBtn">锁定档案</button></div>
+    </section>
+
+    <!-- 2 ANALYZING -->
+    <section class="scr" id="s-scan">
+      <div class="busy">
+        <div class="ln"></div>
+        <div class="sub" id="scanTxt" style="text-align:center">正在读取照片…</div>
+      </div>
+      <div class="prog"><i id="progBar"></i></div>
+      <div class="steps" id="scanSteps"></div>
+    </section>
+
+    <!-- 3 CURATE -->
+    <section class="scr" id="s-curate">
+      <p class="sub" style="margin-top:18px" id="curateLede"></p>
+      <div class="grouphd"><span class="t">有人的照片</span><span class="c" id="cP">0 / 3</span></div>
+      <div class="cgrid" id="gridP"></div>
+      <div class="grouphd"><span class="t">风景</span><span class="c" id="cL">0 / 3</span></div>
+      <div class="cgrid" id="gridL"></div>
+      <button class="btn primary" id="aiTune" style="width:100%;margin-top:18px">让 AI 挑图并调参</button>
+      <div id="aiWhy" class="note" style="margin-top:10px"></div>
+
+      <div class="eyebrow">已剔除 <b id="dropN">0</b></div>
+      <div class="droprow" id="droprow"></div>
+      <div class="chips" id="dropChips"></div>
+      <p class="note">每一张都经你的眼睛。点一下加选或去掉，人像最多 3 张、风景最多 3 张，凑成 2×3 的六宫格。</p>
+      <div class="dock">
+        <button class="btn ghost" id="repick">重选</button>
+        <button class="btn primary" id="toRetouch">看修好的效果</button>
+      </div>
+    </section>
+
+    <!-- 4 RETOUCH -->
+    <section class="scr" id="s-ret">
+      <div class="tabs" id="retTabs"></div>
+      <div class="cmp" id="cmp">
+        <canvas class="bef" id="cvBefore"></canvas>
+        <canvas class="aft" id="cvAfter"></canvas>
+        <div class="bar2"></div>
+        <span class="lb l">原图</span><span class="lb r">档案</span>
+        <div class="ring" id="ring" hidden></div>
+      </div>
+      <input type="range" class="cmprange" id="cut" min="0" max="100" value="50" aria-label="对比原图与成片">
+      <p class="note" id="faceHint">点一下画面里<b style="color:var(--ink)">你的脸</b>，效果只会落在那个位置——旁边的人不会被修。</p>
+      <button class="lnk" id="flipKind" style="margin-top:10px">这张分错组了 →</button>
+      <div class="consist" id="consist"></div>
+      <div class="dock">
+        <button class="btn ghost" id="toProfile2">改档案</button>
+        <button class="btn primary" id="toSay">配一句话</button>
+      </div>
+    </section>
+
+    <!-- 5 SAY -->
+    <section class="scr" id="s-say">
+      <h2>今天你最想说的一句是什么？</h2>
+      <p class="sub">这句是整条朋友圈唯一真正属于你的部分。你不说，我们就只写时间和地点，不替你编感受。</p>
+      <textarea class="say" id="saytext" maxlength="60" placeholder="比如：绕着湖走了一整圈 腿是废了 但荷花真的值"></textarea>
+      <div class="eyebrow">地点</div>
+      <input class="inp" id="place" placeholder="西湖 · 曲院风荷" autocomplete="off">
+      <div id="sayWarn" hidden style="margin-bottom:4px">
+        <div class="aibar fb"><span class="tag">!</span><span>还没接模型，文案不会由 AI 生成。<b id="sayWarnLink" style="cursor:pointer;text-decoration:underline">去接入</b></span></div>
+      </div>
+      <div class="eyebrow">语气</div>
+      <div class="chips" id="tones"></div>
+      <div class="dock"><button class="btn primary" id="toGen">生成文案</button></div>
+    </section>
+
+    <!-- 6 RESULT -->
+    <section class="scr" id="s-result">
+      <div class="preview">
+        <div class="pvhead">
+          <div class="avatar" id="avatar"></div>
+          <div><b>你</b><span id="pvWhen">刚刚</span></div>
+        </div>
+        <p class="copy" id="copyText" contenteditable="true" spellcheck="false" data-ph="在这里直接改">—</p>
+        <div class="grid6" id="grid6"></div>
+      </div>
+      <div style="display:flex;gap:9px;margin-top:14px">
+        <button class="btn ghost" id="polish" style="flex:1">AI 润色这一版</button>
+        <button class="btn primary" id="copyHere" style="flex:1">复制</button>
+      </div>
+      <p class="note" style="margin-top:8px">上面那段可以直接点进去改，改完再润色也行。</p>
+      <div class="eyebrow">换一个说法</div>
+      <div class="alts" id="alts"></div>
+      <div class="aibar" id="mstate"></div>
+      <div id="noai" hidden>
+        <div class="card" style="margin-top:12px;border-color:var(--rose)">
+          <div style="font-size:13.5px;color:var(--ink);font-weight:600;margin-bottom:6px">这段不是 AI 写的</div>
+          <p class="note" style="margin:0">当前没有可用的模型，上面只是把你那句话和地点拼在一起。接上你自己的模型服务后，会由模型写三个版本。</p>
+          <button class="btn primary" id="goCfg2" style="width:100%;margin-top:14px">去接入模型</button>
+        </div>
+      </div>
+      <div class="dock">
+        <button class="btn ghost" id="regen">重写</button>
+        <button class="btn primary" id="toSave">保存并发布</button>
+      </div>
+    </section>
+
+    <!-- 7 SAVE -->
+    <section class="scr" id="s-save">
+      <div class="eyebrow">第一步 · 存进相册</div>
+      <button class="btn primary" id="shareAll" style="width:100%">存 <span id="shareN">6</span> 张到相册</button>
+      <p class="sub" id="saveHow" style="margin:10px 0 0;font-size:12.2px"></p>
+      <details id="fallbackBox" style="margin-top:14px">
+        <summary style="font-family:var(--mono);font-size:10px;color:var(--ink3);cursor:pointer;letter-spacing:.06em">
+          存不进去？在这里逐张长按保存</summary>
+        <div class="saverow" id="saverow"></div>
+      </details>
+
+      <div class="eyebrow">第二步 · 文案</div>
+      <div class="card">
+        <p class="copy" id="copyText2" style="margin:0;font-size:13.5px"></p>
+        <button class="btn primary" id="copyBtn" style="margin-top:14px;width:100%">复制文案</button>
+      </div>
+      <div class="eyebrow">第三步 · 去微信</div>
+      <div class="hand">
+        <div class="h"><span class="n">1</span><div><b>微信 → 朋友圈 → 相机图标</b><p>短按选照片，长按会变成发纯文字。</p></div></div>
+        <div class="h"><span class="n">2</span><div><b>从相册最新的 6 张里按顺序全选</b><p>选择顺序就是显示顺序。</p></div></div>
+        <div class="h"><span class="n">3</span><div><b>长按文字框 → 粘贴 → 发送</b><p>位置自己选一下，网页拿不到微信的位置库。</p></div></div>
+      </div>
+      <div style="text-align:center;padding:34px 0 10px">
+        <div class="big" id="finalTime">—</div>
+        <div class="note" style="margin-top:10px">你在这条朋友圈上真正花掉的时间</div>
+      </div>
+      <div class="dock">
+        <button class="btn ghost" id="restart">再来一条</button>
+        <button class="btn primary" id="shareAll2">存到相册</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* ===================== 旅图发发 · 可真实使用的网页 App ===================== */
+const $ = id => document.getElementById(id);
+const TONES = ['平实短句','碎碎念','一点点吐槽','文艺但不用力'];
+const SL = [['s','磨皮'],['t','瘦脸'],['b','提亮'],['e','通透']];
+const SL_LAND = [['b','提亮'],['sat','鲜艳']];
+const LS = {
+  get(k,d){ try{ const v=localStorage.getItem('luojiao.'+k); return v==null?d:JSON.parse(v) }catch(e){ return d } },
+  set(k,v){ try{ localStorage.setItem('luojiao.'+k, JSON.stringify(v)) }catch(e){} }
+};
+
+let profile = LS.get('profile', {s:34,t:18,b:26,e:12});
+let draft = {...profile};
+/* 风景只有光和色，没有磨皮瘦脸 */
+let landProfile = LS.get('land', {b:22, sat:16});
+let landDraft = {...landProfile};
+let applied = LS.get('applied', 0);
+let tone = LS.get('tone', TONES[0]);
+let photos = [];          // {id,img,w,h,thumb,sharp,luma,hash,kind,face:{x,y,r},drop,why,sel}
+let selP = [], selL = [];
+let retIdx = 0, alts = [], chosenAlt = 0, outBlobs = [];
+let t0 = 0, elapsed = 0, timerH = null;
+
+/* ---------- 计时 ---------- */
+function startTimer(){ if(timerH) return; t0 = Date.now()-elapsed*1000;
+  const tick=()=>{ elapsed = Math.round((Date.now()-t0)/1000) };
+  tick(); timerH = setInterval(tick, 1000); }
+function stopTimer(){ clearInterval(timerH); timerH = null; }
+
+/* ---------- 路由 ---------- */
+const TITLES={start:'旅图发发',cfg:'AI 设置',profile:'脸部档案',scan:'读取中',curate:'过一遍',ret:'修好的效果',say:'你那句话',result:'成片',save:'发布'};
+const FLOW=['start','curate','ret','say','result','save'];
+let cur='start', profileFrom='start', cfgFrom='start';
+function go(n){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('live'));
+  $('s-'+n).classList.add('live'); $('scroll').scrollTop=0;
+  $('ttl').textContent=TITLES[n];
+  $('back').hidden = (n==='start'||n==='scan');
+  cur=n;
+}
+$('back').onclick=()=>{
+  if(cur==='cfg'){ go(cfgFrom); return }
+  if(cur==='profile'){ go(profileFrom); return }
+  const i=FLOW.indexOf(cur); go(FLOW[Math.max(0,i-1)]);
+};
+
+/* ---------- 档案 ---------- */
+function profText(p){ return `人像　磨皮 ${p.s} · 瘦脸 ${p.t} · 提亮 ${p.b} · 通透 ${p.e}\n风景　提亮 ${landProfile.b} · 鲜艳 ${landProfile.sat}\n已套用 ${applied} 次` }
+function paintProfSummary(){ $('profSummary').style.whiteSpace='pre-line'; $('profSummary').textContent = profText(profile) }
+SL.forEach(([k,label])=>{
+  const w=document.createElement('div'); w.className='sld';
+  w.innerHTML=`<label for="sl-${k}">${label}<b id="v-${k}">${draft[k]}</b></label>`+
+              `<input type="range" id="sl-${k}" min="0" max="60" value="${draft[k]}">`;
+  $('sliders').appendChild(w);
+  w.querySelector('input').addEventListener('input',e=>{
+    startTimer(); draft[k]=+e.target.value; $('v-'+k).textContent=draft[k]; paintProfPreview();
+  });
+});
+SL_LAND.forEach(([k,label])=>{
+  const w=document.createElement('div'); w.className='sld';
+  w.innerHTML=`<label for="lv-${k}">${label}<b id="lb-${k}">${landDraft[k]}</b></label>`+
+              `<input type="range" id="lv-${k}" min="0" max="60" value="${landDraft[k]}">`;
+  $('landSliders').appendChild(w);
+  w.querySelector('input').addEventListener('input',e=>{
+    startTimer(); landDraft[k]=+e.target.value; $('lb-'+k).textContent=landDraft[k]; paintLandPreview();
+  });
+});
+$('toProfile').onclick=()=>{ startTimer(); draft={...profile}; landDraft={...landProfile}; profileFrom='start'; syncSliders(); paintProfPreview(); paintLandPreview(); go('profile') };
+$('toProfile2').onclick=()=>{ draft={...profile}; landDraft={...landProfile}; profileFrom='ret'; syncSliders(); paintProfPreview(); paintLandPreview(); go('profile') };
+function syncSliders(){
+  SL.forEach(([k])=>{ const i=$('sl-'+k); if(i){ i.value=draft[k]; $('v-'+k).textContent=draft[k] } });
+  SL_LAND.forEach(([k])=>{ const i=$('lv-'+k); if(i){ i.value=landDraft[k]; $('lb-'+k).textContent=landDraft[k] } });
+}
+$('lockBtn').onclick=()=>{
+  profile={...draft}; LS.set('profile',profile);
+  landProfile={...landDraft}; LS.set('land',landProfile);
+  paintProfSummary();
+  $('lockNote').innerHTML='<b>已锁定</b>接下来每一张有你的照片都会用这一套，直到你再改它。';
+  if(profileFrom==='ret'){ renderRetouchScreen(); go('ret') } else go(photos.length?'curate':'start');
+};
+
+function placeholder(cv, label){
+  const c=cv.getContext('2d'), w=cv.width;
+  const g=c.createLinearGradient(0,0,w,w);
+  g.addColorStop(0,'rgba(207,186,242,.55)'); g.addColorStop(.5,'rgba(245,201,228,.45)');
+  g.addColorStop(1,'rgba(217,241,228,.5)');
+  c.clearRect(0,0,w,w); c.fillStyle=g; c.fillRect(0,0,w,w);
+  c.fillStyle='rgba(60,45,90,.52)'; c.textAlign='center'; c.textBaseline='middle';
+  c.font='500 '+Math.round(w*0.082)+'px "Hanken Grotesk","PingFang SC",sans-serif';
+  c.fillText(label, w/2, w/2 - w*0.04);
+  c.font='400 '+Math.round(w*0.062)+'px "Hanken Grotesk","PingFang SC",sans-serif';
+  c.fillStyle='rgba(60,45,90,.38)';
+  c.fillText('选完照片后在这里预览', w/2, w/2 + w*0.07);
+}
+let landPreviewSrc=null;
+function paintLandPreview(){
+  const cv=$('landCv'); if(!cv) return;
+  if(!landPreviewSrc) landPreviewSrc = photos.find(x=>x.kind==='l') || null;
+  if(!landPreviewSrc){ placeholder(cv,'风景'); return }
+  drawSquare(cv, landPreviewSrc, profile, landDraft);
+}
+
+/* 档案预览：优先用已选的人像，没有就用样片 */
+let profPreviewSrc=null;
+function paintProfPreview(){
+  const cv=$('profCv'); if(!cv) return;
+  if(!profPreviewSrc) profPreviewSrc = photos.find(x=>x.kind==='p') || null;
+  if(!profPreviewSrc){ placeholder(cv,'人像'); return }
+  drawSquare(cv, profPreviewSrc, draft);
+}
+
+/* ---------- 图像工具 ---------- */
+function loadImg(src){ return new Promise((res,rej)=>{ const im=new Image(); im.crossOrigin='anonymous';
+  im.onload=()=>res(im); im.onerror=rej; im.src=src }) }
+function mkPhoto(img,name){
+  const t=document.createElement('canvas'); const S=200; t.width=S; t.height=S;
+  const c=t.getContext('2d',{willReadFrequently:true});
+  const s=Math.min(img.naturalWidth||img.width, img.naturalHeight||img.height);
+  const sx=((img.naturalWidth||img.width)-s)/2, sy=((img.naturalHeight||img.height)-s)/2;
+  c.drawImage(img, sx,sy,s,s, 0,0,S,S);
+  return { id:name+Math.random().toString(36).slice(2,7), img, name, thumb:t, sel:false };
+}
+/* 清晰度（拉普拉斯方差）+ 亮度 + 感知哈希 */
+function analyze(p){
+  const S=64, c=document.createElement('canvas'); c.width=S;c.height=S;
+  const x=c.getContext('2d',{willReadFrequently:true});
+  x.drawImage(p.thumb,0,0,S,S);
+  const d=x.getImageData(0,0,S,S).data, g=new Float32Array(S*S);
+  let sum=0;
+  for(let i=0;i<S*S;i++){ const v=(d[i*4]*.299+d[i*4+1]*.587+d[i*4+2]*.114); g[i]=v; sum+=v }
+  p.luma = sum/(S*S);
+  let acc=0,n=0,mean=0;
+  const lap=new Float32Array(S*S);
+  for(let y=1;y<S-1;y++) for(let xx=1;xx<S-1;xx++){
+    const i=y*S+xx;
+    const v=4*g[i]-g[i-1]-g[i+1]-g[i-S]-g[i+S];
+    lap[i]=v; mean+=v; n++;
+  }
+  mean/=n;
+  for(let y=1;y<S-1;y++) for(let xx=1;xx<S-1;xx++){ const v=lap[y*S+xx]-mean; acc+=v*v }
+  p.sharp = acc/n;
+  /* aHash 8x8 */
+  const H=8, c2=document.createElement('canvas'); c2.width=H;c2.height=H;
+  const x2=c2.getContext('2d',{willReadFrequently:true}); x2.drawImage(p.thumb,0,0,H,H);
+  const d2=x2.getImageData(0,0,H,H).data; const gs=[]; let m2=0;
+  for(let i=0;i<H*H;i++){ const v=d2[i*4]*.299+d2[i*4+1]*.587+d2[i*4+2]*.114; gs.push(v); m2+=v }
+  m2/=H*H; p.hash = gs.map(v=>v>m2?1:0);
+  /* 肤色比例（人像启发式） */
+  const S3=48,c3=document.createElement('canvas');c3.width=S3;c3.height=S3;
+  const x3=c3.getContext('2d',{willReadFrequently:true}); x3.drawImage(p.thumb,0,0,S3,S3);
+  const d3=x3.getImageData(0,0,S3,S3).data; let skin=0, sx=0, sy=0; const pts=[];
+  for(let i=0;i<S3*S3;i++){
+    const r=d3[i*4],g2=d3[i*4+1],b=d3[i*4+2];
+    const mx=Math.max(r,g2,b), mn=Math.min(r,g2,b);
+    if(r>95&&g2>40&&b>20&&mx-mn>15&&Math.abs(r-g2)>15&&r>g2&&r>b){
+      const px=i%S3, py=Math.floor(i/S3); skin++; sx+=px; sy+=py; pts.push(px,py);
+    }
+  }
+  p.skin = skin/(S3*S3);
+  p.skinC = skin? {x:(sx/skin)/S3, y:(sy/skin)/S3} : null;
+  /* 紧凑度：脸是一团，暖色风景是散的。散的就不算人 */
+  if(skin>4){
+    const cx=sx/skin, cy=sy/skin; let dd=0;
+    for(let i=0;i<pts.length;i+=2){ dd += Math.hypot(pts[i]-cx, pts[i+1]-cy) }
+    p.skinSpread = (dd/skin)/S3;
+  } else p.skinSpread = 1;
+}
+function hamming(a,b){ let d=0; for(let i=0;i<a.length;i++) if(a[i]!==b[i]) d++; return d }
+
+/* 人脸检测：安卓 Chrome 有；iOS 没有 → 用肤色重心兜底，用户可点击修正 */
+async function detectFace(p){
+  if('FaceDetector' in window){
+    try{
+      const fd=new FaceDetector({fastMode:true,maxDetectedFaces:4});
+      const faces=await fd.detect(p.thumb);
+      if(faces && faces.length){
+        faces.sort((a,b)=>b.boundingBox.width*b.boundingBox.height-a.boundingBox.width*a.boundingBox.height);
+        const bb=faces[0].boundingBox, S=p.thumb.width;
+        p.faces = faces.length;
+        return {x:(bb.x+bb.width/2)/S, y:(bb.y+bb.height/2)/S, r:Math.max(bb.width,bb.height)/S*0.78};
+      }
+    }catch(e){}
+  }
+  /* 无系统人脸检测时（iOS Safari）：按肤色估。
+     这里刻意偏向"宁可多认"——把风景误判成人像，用户看得见也能一键改回；
+     把真人像漏成风景，脸就完全没修，那是承诺没兑现。*/
+  if(p.skin>0.085 && p.skinSpread<0.30 && p.skinC){
+    p.guessed = true;
+    return {x:p.skinC.x, y:Math.max(.18,p.skinC.y-0.06), r:0.30};
+  }
+  return null;
+}
+
+/* ---------- 渲染：真实像素级美颜 ---------- */
+function cropRect(p){
+  if(p.crop) return p.crop;
+  const w=p.img.naturalWidth||p.img.width, h=p.img.naturalHeight||p.img.height;
+  const s=Math.min(w,h);
+  let sx=(w-s)/2, sy=(h-s)/2;
+  if(p.face){ /* 首次裁切向脸偏移，之后固定不变 */
+    sy = Math.max(0, Math.min(h-s, p.face.y*h - s*0.42));
+    sx = Math.max(0, Math.min(w-s, p.face.x*w - s*0.5));
+  }
+  p.crop={sx,sy,s}; return p.crop;
+}
+/* 脸在方图里的归一化位置 */
+function faceInSquare(p){
+  if(!p.face) return {mx:.5,my:.42,r:.3};
+  const w=p.img.naturalWidth||p.img.width, h=p.img.naturalHeight||p.img.height;
+  const c=cropRect(p);
+  return { mx:(p.face.x*w-c.sx)/c.s, my:(p.face.y*h-c.sy)/c.s, r:p.face.r||.3 };
+}
+function blurCanvas(src, amount){
+  const w=src.width, k=Math.max(2, Math.round(w/Math.max(2, 34/Math.max(.001,amount))));
+  const small=document.createElement('canvas'); small.width=Math.max(2,Math.round(w/k)); small.height=small.width;
+  const sc=small.getContext('2d'); sc.imageSmoothingEnabled=true; sc.drawImage(src,0,0,small.width,small.height);
+  const out=document.createElement('canvas'); out.width=w; out.height=w;
+  const oc=out.getContext('2d'); oc.imageSmoothingEnabled=true; oc.drawImage(small,0,0,w,w);
+  return out;
+}
+function featherMask(size, f){
+  const m=document.createElement('canvas'); m.width=size;m.height=size;
+  const c=m.getContext('2d');
+  const cx=size*f.mx, cy=size*f.my, r=size*f.r;
+  const g=c.createRadialGradient(cx,cy,r*0.35,cx,cy,r*1.25);
+  g.addColorStop(0,'rgba(0,0,0,1)'); g.addColorStop(.6,'rgba(0,0,0,.92)'); g.addColorStop(1,'rgba(0,0,0,0)');
+  c.fillStyle=g; c.beginPath(); c.ellipse(cx,cy,r*1.25,r*1.45,0,0,7); c.fill();
+  return m;
+}
+/* 把 photo 画成 size×size 的方图；prm 为 null/零 时输出原图 */
+function adjust(ctx, size, br, sat, ct){
+  if('filter' in ctx){
+    const tmp=document.createElement('canvas'); tmp.width=size;tmp.height=size;
+    tmp.getContext('2d').drawImage(ctx.canvas,0,0);
+    ctx.clearRect(0,0,size,size);
+    ctx.filter=`brightness(${br.toFixed(3)}) saturate(${sat.toFixed(3)}) contrast(${ct.toFixed(3)})`;
+    ctx.drawImage(tmp,0,0); ctx.filter='none'; return;
+  }
+  const im=ctx.getImageData(0,0,size,size), d=im.data;
+  for(let i=0;i<d.length;i+=4){
+    let r=d[i]*br, g=d[i+1]*br, b=d[i+2]*br;
+    const l=r*.299+g*.587+b*.114;
+    r=l+(r-l)*sat; g=l+(g-l)*sat; b=l+(b-l)*sat;
+    r=(r-128)*ct+128; g=(g-128)*ct+128; b=(b-128)*ct+128;
+    d[i]=r<0?0:r>255?255:r; d[i+1]=g<0?0:g>255?255:g; d[i+2]=b<0?0:b>255?255:b;
+  }
+  ctx.putImageData(im,0,0);
+}
+function drawSquare(cv, p, prm, lp){
+  const size = cv.width;
+  const ctx = cv.getContext('2d');
+  const F = faceInSquare(p);
+  const {sx,sy,s} = cropRect(p);
+  ctx.clearRect(0,0,size,size);
+  ctx.drawImage(p.img, sx,sy,s,s, 0,0,size,size);
+  if(p.kind!=='p'){
+    /* 风景：只做提亮和鲜艳，绝不碰磨皮、瘦脸 */
+    if(prm){ const L=lp||landProfile;
+      adjust(ctx,size, 1+(L.b/60)*0.30, 1+(L.sat/60)*0.34, 1+(L.b/60)*0.07) }
+    return;
+  }
+  if(!prm) return;
+  const S=prm.s/60, T=prm.t/60, B=prm.b/60, E=prm.e/60;
+  if(!S && !T && !B && !E) return;
+
+  const base=document.createElement('canvas'); base.width=size;base.height=size;
+  base.getContext('2d').drawImage(cv,0,0);
+
+  /* 瘦脸：脸部区域横向压缩，羽化回贴 */
+  let warped=base;
+  if(T>0.02){
+    const w2=document.createElement('canvas'); w2.width=size;w2.height=size;
+    const wc=w2.getContext('2d'); wc.drawImage(base,0,0);
+    const cx=size*F.mx, cy=size*F.my, r=size*F.r*1.3;
+    const y0=Math.max(0,Math.round(cy-r*1.15)), y1=Math.min(size,Math.round(cy+r*1.25));
+    for(let y=y0;y<y1;y++){
+      const dy=(y-cy)/(r*1.2);
+      const wgt=Math.max(0,1-dy*dy);
+      const k=1-T*0.16*wgt;
+      if(k>=0.999) continue;
+      const nw=size*k, nx=cx-cx*k;
+      wc.clearRect(0,y,size,1);
+      wc.drawImage(base, 0,y,size,1, nx,y,nw,1);
+      if(nx>0){ wc.drawImage(base,0,y,2,1, 0,y,Math.ceil(nx)+1,1) }
+      if(nx+nw<size){ wc.drawImage(base,size-2,y,2,1, Math.floor(nx+nw)-1,y,size-(nx+nw)+2,1) }
+    }
+    warped=w2;
+  }
+
+  /* 提亮 / 通透：脸部局部 */
+  const tone=document.createElement('canvas'); tone.width=size;tone.height=size;
+  const tc=tone.getContext('2d');
+  const canFilter = 'filter' in tc;
+  if(canFilter){
+    tc.filter=`brightness(${(1+B*0.26).toFixed(3)}) saturate(${(1+B*0.14).toFixed(3)}) contrast(${(1+E*0.14).toFixed(3)})`;
+    tc.drawImage(warped,0,0); tc.filter='none';
+  } else {
+    tc.drawImage(warped,0,0);
+    const im=tc.getImageData(0,0,size,size), d=im.data, br=1+B*0.26, ct=1+E*0.14;
+    for(let i=0;i<d.length;i+=4){
+      for(let j=0;j<3;j++){ let v=d[i+j]*br; v=(v-128)*ct+128; d[i+j]=v<0?0:v>255?255:v }
+    }
+    tc.putImageData(im,0,0);
+  }
+
+  /* 磨皮：模糊层按强度混合 */
+  const soft=document.createElement('canvas'); soft.width=size;soft.height=size;
+  const sc2=soft.getContext('2d');
+  sc2.drawImage(tone,0,0);
+  if(S>0.02){
+    const bl=blurCanvas(tone, S);
+    sc2.globalAlpha = Math.min(0.8, S*0.78);
+    sc2.drawImage(bl,0,0);
+    sc2.globalAlpha=1;
+  }
+
+  /* 用羽化遮罩把处理层贴回去 —— 效果只落在脸上 */
+  const masked=document.createElement('canvas'); masked.width=size;masked.height=size;
+  const mc=masked.getContext('2d');
+  mc.drawImage(soft,0,0);
+  mc.globalCompositeOperation='destination-in';
+  mc.drawImage(featherMask(size, F),0,0);
+  mc.globalCompositeOperation='source-over';
+
+  ctx.clearRect(0,0,size,size);
+  ctx.drawImage(warped,0,0);
+  ctx.drawImage(masked,0,0);
+}
+
+/* ---------- 选片 ---------- */
+$('pick').addEventListener('change', async e=>{
+  const files=[...e.target.files].slice(0,60);
+  if(!files.length) return;
+  startTimer(); go('scan');
+  photos=[];
+  $('scanSteps').innerHTML='';
+  const addStep=(t)=>{ const d=document.createElement('div'); d.className='stp';
+    d.innerHTML='<span class="n">✓</span><span>'+t+'</span>'; $('scanSteps').appendChild(d) };
+  for(let i=0;i<files.length;i++){
+    $('scanTxt').textContent='正在读取第 '+(i+1)+' / '+files.length+' 张…';
+    $('progBar').style.width = Math.round((i+1)/files.length*60)+'%';
+    try{
+      const url=URL.createObjectURL(files[i]);
+      const im=await loadImg(url);
+      const p=mkPhoto(im, files[i].name||('img'+i));
+      p.time = files[i].lastModified||Date.now();
+      photos.push(p);
+    }catch(err){}
+    if(i%3===0) await new Promise(r=>setTimeout(r));
+  }
+  addStep('读入 <b>'+photos.length+'</b> 张');
+  $('scanTxt').textContent='正在评估清晰度和重复…';
+  $('progBar').style.width='72%'; await new Promise(r=>setTimeout(r,30));
+  photos.forEach(analyze);
+  addStep('算完清晰度、曝光和感知哈希');
+  $('scanTxt').textContent='正在找出有人的照片…';
+  $('progBar').style.width='88%'; await new Promise(r=>setTimeout(r,30));
+  for(const p of photos){ p.face = await detectFace(p); p.kind = p.face ? 'p' : 'l'; }
+  addStep(('FaceDetector' in window) ? '用系统人脸检测分出人像与风景' : '用肤色分布估计人像位置（可手动点脸修正）');
+  cull();
+  profPreviewSrc=null; landPreviewSrc=null; paintProfPreview(); paintLandPreview();
+  addStep('剔除 <b>'+photos.filter(p=>p.drop).length+'</b> 张，留下 <b>'+photos.filter(p=>!p.drop).length+'</b> 张候选');
+  $('progBar').style.width='100%';
+  await new Promise(r=>setTimeout(r,320));
+  buildCurate(); go('curate');
+});
+$('repick').onclick=()=>$('pick').click();
+
+function median(a){ if(!a.length) return 0; const b=[...a].sort((x,y)=>x-y); return b[Math.floor(b.length/2)] }
+function cull(){
+  /* 清晰度只在同类里比：荷叶细节天生比傍晚人像分高，跨场景比会误杀 */
+  const medP = median(photos.filter(p=>p.kind==='p').map(p=>p.sharp));
+  const medL = median(photos.filter(p=>p.kind==='l').map(p=>p.sharp));
+  photos.forEach(p=>{ p.drop=false; p.why='' });
+  /* 重复：哈希相近的一组只留最清晰 */
+  for(let i=0;i<photos.length;i++){
+    if(photos[i].drop) continue;
+    for(let j=i+1;j<photos.length;j++){
+      if(photos[j].drop) continue;
+      if(hamming(photos[i].hash, photos[j].hash)<=5){
+        const worse = photos[i].sharp < photos[j].sharp ? i : j;
+        photos[worse].drop=true; photos[worse].why='重复';
+      }
+    }
+  }
+  photos.forEach(p=>{
+    if(p.drop) return;
+    const med = p.kind==='p' ? medP : medL;
+    if(med && p.sharp < med*0.35){ p.drop=true; p.why='模糊' }
+    else if(p.luma < 38){ p.drop=true; p.why='太暗' }
+    else if(p.luma > 226){ p.drop=true; p.why='过曝' }
+  });
+  const keep=photos.filter(p=>!p.drop);
+  /* 真检测到的脸排在猜出来的前面，其次才比清晰度 */
+  const P=keep.filter(p=>p.kind==='p').sort((a,b)=>((a.guessed?1:0)-(b.guessed?1:0)) || (b.sharp-a.sharp));
+  const L=keep.filter(p=>p.kind==='l').sort((a,b)=>b.sharp-a.sharp);
+  keep.forEach(p=>p.sel=false);
+  selP=P.slice(0,3); selL=L.slice(0,3);
+  selP.forEach(p=>p.sel=true); selL.forEach(p=>p.sel=true);
+}
+
+function tileEl(p, list, max){
+  const b=document.createElement('button'); b.type='button'; b.className='tile';
+  const c=document.createElement('canvas'); c.width=140;c.height=140;
+  c.getContext('2d').drawImage(p.thumb,0,0,140,140);
+  b.appendChild(c);
+  const no=document.createElement('span'); no.className='no'; b.appendChild(no);
+  b.onclick=()=>{
+    startTimer();
+    const arr = p.kind==='p'?selP:selL;
+    const i=arr.indexOf(p);
+    if(i>=0){ arr.splice(i,1); p.sel=false }
+    else{ if(arr.length>=3) return; arr.push(p); p.sel=true }
+    paintCurate();
+  };
+  b._p=p; return b;
+}
+function buildCurate(){
+  const keep=photos.filter(p=>!p.drop);
+  $('gridP').innerHTML=''; $('gridL').innerHTML='';
+  keep.filter(p=>p.kind==='p').forEach(p=>$('gridP').appendChild(tileEl(p)));
+  keep.filter(p=>p.kind==='l').forEach(p=>$('gridL').appendChild(tileEl(p)));
+  const dropped=photos.filter(p=>p.drop);
+  $('droprow').innerHTML=''; $('dropN').textContent=dropped.length+' 张';
+  dropped.forEach(p=>{ const d=document.createElement('div'); d.className='t2';
+    const c=document.createElement('canvas'); c.width=92;c.height=92;
+    c.getContext('2d').drawImage(p.thumb,0,0,92,92);
+    d.appendChild(c); const s=document.createElement('span'); s.textContent=p.why; d.appendChild(s);
+    $('droprow').appendChild(d) });
+  const tally={}; dropped.forEach(p=>tally[p.why]=(tally[p.why]||0)+1);
+  $('dropChips').innerHTML=Object.entries(tally).map(([k,v])=>`<span class="chip">${k} ${v}</span>`).join('');
+  const guessed = !('FaceDetector' in window) && keep.some(p=>p.guessed);
+  $('curateLede').innerHTML=`读了 <b style="color:var(--ink)">${photos.length}</b> 张，留下 <b style="color:var(--ink)">${keep.length}</b> 张候选。已经替你预选好，点一下可以改。`
+    + (guessed ? `<br><span style="color:var(--plum)">这台设备没有系统人脸检测，人像和风景是按肤色估的。分错了下一步能一键改回来。</span>` : '');
+  paintCurate();
+}
+function paintCurate(){
+  [...$('gridP').children,...$('gridL').children].forEach(b=>{
+    const p=b._p, arr=p.kind==='p'?selP:selL, i=arr.indexOf(p);
+    b.classList.toggle('on', i>=0); b.classList.toggle('muted', i<0);
+    b.setAttribute('aria-pressed', i>=0);
+    b.querySelector('.no').textContent = i>=0 ? (i+1) : '+';
+  });
+  $('cP').textContent=selP.length+' / 3'; $('cL').textContent=selL.length+' / 3';
+  const ok=selP.length+selL.length>=2;
+  $('toRetouch').disabled=!ok;
+  $('toRetouch').textContent= ok ? '看修好的效果' : '至少留 2 张';
+}
+$('toRetouch').onclick=()=>{ startTimer(); retIdx=0; renderRetouchScreen(); go('ret') };
+
+/* ---------- 对比屏 ---------- */
+function renderRetouchScreen(){
+  const list = orderedPhotos();
+  if(!list.length) return;
+  if(retIdx>=list.length) retIdx=0;
+  const tabs=$('retTabs'); tabs.innerHTML='';
+  list.forEach((p,n)=>{
+    const b=document.createElement('button'); b.className='tab'; b.type='button';
+    b.setAttribute('aria-pressed', n===retIdx);
+    const c=document.createElement('canvas'); c.width=68;c.height=68;
+    drawSquare(c,p,profile,landProfile); b.appendChild(c);
+    const s=document.createElement('span'); s.textContent=(n+1); b.appendChild(s);
+    b.onclick=()=>{ startTimer(); retIdx=n; renderRetouchScreen() };
+    tabs.appendChild(b);
+  });
+  const p=list[retIdx];
+  const D=640;
+  ['cvBefore','cvAfter'].forEach(id=>{ const c=$(id); c.width=D; c.height=D });
+  drawSquare($('cvBefore'), p, null);
+  drawSquare($('cvAfter'), p, profile, landProfile);
+  $('cmp').querySelector('.lb.r').textContent = p.kind==='p' ? '人像档案' : '风景档案';
+  $('faceHint').innerHTML = p.kind==='p'
+    ? '点一下画面里<b style="color:var(--ink)">你的脸</b>，磨皮和瘦脸只会落在那个位置——旁边的人和背景都不会被修。'
+    : '风景照<b style="color:var(--ink)">不做磨皮、不做瘦脸</b>，只按风景档案统一提亮和鲜艳度，让六张像同一天拍的。';
+  $('flipKind').textContent = p.kind==='p' ? '这张其实没有人，移到风景 →' : '这张其实有人，移到人像 →';
+  if(p.kind==='p' && p.face){
+    const r=$('ring'); r.hidden=false;
+    const size=$('cmp').clientWidth, F=faceInSquare(p);
+    const rr=size*F.r*1.25;
+    r.style.width=rr*2+'px'; r.style.height=rr*2.2+'px';
+    r.style.left=(size*F.mx-rr)+'px'; r.style.top=(size*F.my-rr*1.1)+'px';
+  } else $('ring').hidden=true;
+  paintConsist();
+}
+$('cmp').addEventListener('click', e=>{
+  const list=selP.length?selP:selL, p=list[retIdx];
+  if(!p || p.kind!=='p') return;
+  const r=$('cmp').getBoundingClientRect();
+  const nx=(e.clientX-r.left)/r.width, ny=(e.clientY-r.top)/r.height;
+  /* 裁切已固定，只把点击位置换算回原图坐标来移动遮罩 */
+  const w=p.img.naturalWidth||p.img.width, h=p.img.naturalHeight||p.img.height;
+  const c0=cropRect(p);
+  p.face = { x:(c0.sx+nx*c0.s)/w, y:(c0.sy+ny*c0.s)/h, r:(p.face?p.face.r:0.3) };
+  startTimer(); renderRetouchScreen();
+});
+/* 认错人是必然会发生的，给用户一键改回来 */
+$('flipKind').onclick=()=>{
+  const list=orderedPhotos(), p=list[retIdx];
+  if(!p) return;
+  startTimer();
+  const from = p.kind==='p'?selP:selL, to = p.kind==='p'?selL:selP;
+  const i=from.indexOf(p); if(i>=0) from.splice(i,1);
+  p.kind = p.kind==='p' ? 'l' : 'p';
+  if(p.kind==='p' && !p.face) p.face={x:.5,y:.38,r:.3};
+  if(to.length<3) to.push(p); else p.sel=false;
+  p.crop=null;
+  profPreviewSrc=null; landPreviewSrc=null; paintProfPreview(); paintLandPreview();
+  buildCurate(); retIdx=Math.max(0,Math.min(retIdx, orderedPhotos().length-1));
+  renderRetouchScreen();
+};
+$('cut').addEventListener('input',e=>{ startTimer(); $('cmp').style.setProperty('--cut', e.target.value+'%') });
+$('cmp').style.setProperty('--cut','50%');
+function paintConsist(){
+  if(!selP.length){ $('consist').innerHTML='<div class="crow hd"><span class="nm">这条没有选人像</span></div>'; return }
+  let h='<div class="crow hd"><span class="nm" style="font-family:var(--mono)">同一份档案</span><span>磨皮</span><span>瘦脸</span><span>提亮</span></div>';
+  selP.forEach((p,i)=>{ h+=`<div class="crow"><span class="nm">第 ${i+1} 张</span>`+
+    `<span class="vv">${profile.s}</span><span class="vv">${profile.t}</span><span class="vv">${profile.b}</span></div>` });
+  h+='<div class="crow hd" style="margin-top:4px"><span class="nm" style="font-family:var(--mono)">一张张手动调会变成</span><span>磨皮</span><span>瘦脸</span><span>提亮</span></div>';
+  selP.forEach((p,i)=>{ const j=(i*37)%17;
+    h+=`<div class="crow"><span class="nm" style="color:var(--ink3)">第 ${i+1} 张</span>`+
+    `<span class="vv" style="color:var(--rose)">${profile.s-6+j%13}</span>`+
+    `<span class="vv" style="color:var(--rose)">${Math.max(0,profile.t-8+(j*3)%17)}</span>`+
+    `<span class="vv" style="color:var(--rose)">${profile.b-7+(j*5)%15}</span></div>` });
+  $('consist').innerHTML=h;
+}
+
+/* ---------- 一句话 ---------- */
+TONES.forEach(t=>{
+  const b=document.createElement('button'); b.className='chip act'; b.type='button'; b.textContent=t;
+  b.setAttribute('aria-pressed', t===tone);
+  b.onclick=()=>{ tone=t; LS.set('tone',t); [...$('tones').children].forEach(c=>c.setAttribute('aria-pressed',c===b)) };
+  $('tones').appendChild(b);
+});
+$('place').value = LS.get('place','');
+$('toSay').onclick=async()=>{
+  startTimer();
+  const has = cfgReady() || !!(await getSample());
+  $('sayWarn').hidden = has;
+  go('say');
+};
+$('sayWarnLink').onclick=()=>{ cfgFrom='say'; go('cfg') };
+$('saytext').addEventListener('input',startTimer);
+$('place').addEventListener('input',()=>{ startTimer(); LS.set('place',$('place').value) });
+
+/* ---------- 自建模型接入（OpenAI 兼容） ---------- */
+let cfg = LS.get('api', {url:'', model:'', key:'', vmodel:'', vision:false});
+function cfgReady(){ return !!(cfg.url && cfg.model && cfg.key) }
+$('cfgUrl').value=cfg.url||''; $('cfgModel').value=cfg.model||''; $('cfgKey').value=cfg.key||'';
+$('cfgVModel').value=cfg.vmodel||''; $('cfgVision').checked=!!cfg.vision;
+$('toCfg').onclick=()=>{ cfgFrom=cur; go('cfg') };
+$('cfgSave').onclick=()=>{
+  cfg={url:$('cfgUrl').value.trim(), model:$('cfgModel').value.trim(), key:$('cfgKey').value.trim(),
+       vmodel:$('cfgVModel').value.trim(), vision:$('cfgVision').checked};
+  LS.set('api',cfg);
+  $('cfgState').className='mstate live';
+  $('cfgState').textContent = cfgReady()
+    ? ('已保存。挑图调参和写文案都会走这个服务' + (cfg.vision ? '，挑图时会上传 256px 缩略图。' : '，只发数字、不发图片。'))
+    : '已保存。信息不全，会继续用内置模型。';
+};
+$('cfgTest').onclick=async()=>{
+  const c={url:$('cfgUrl').value.trim(), model:$('cfgModel').value.trim(), key:$('cfgKey').value.trim()};
+  if(!c.url||!c.model||!c.key){ $('cfgState').className='mstate fb'; $('cfgState').textContent='三项都要填。'; return }
+  $('cfgState').className='mstate'; $('cfgState').textContent='正在连接…';
+  try{
+    const r = await rawChat(c, [{role:'user',content:'只回复两个字：可用'}], 24);
+    $('cfgState').className='mstate live';
+    $('cfgState').textContent='连接成功，模型回了：'+String(r).slice(0,40);
+  }catch(e){
+    $('cfgState').className='mstate fb';
+    $('cfgState').textContent='连接失败：'+(e&&e.message?e.message:'未知错误');
+  }
+};
+function visionOn(){ return !!(cfgReady() && cfg.vision) }
+async function rawChat(c, messages, maxTokens, modelOverride){
+  let res;
+  try{
+    res = await fetch(c.url,{ method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+c.key},
+      body: JSON.stringify({ model:modelOverride||c.model, messages, temperature:0.8, max_tokens:maxTokens||700 }) });
+  }catch(err){
+    throw new Error('网络请求被拦截或无法送达。如果这个页面跑在 claude.ai 的沙箱里，外部接口会被安全策略挡掉——把这份 HTML 放到自己的服务器上就能正常调用。');
+  }
+  if(!res.ok){
+    let t=''; try{ t=(await res.text()).slice(0,160) }catch(e){}
+    throw new Error('HTTP '+res.status+(t?(' · '+t):''));
+  }
+  const j = await res.json();
+  const msg = j && j.choices && j.choices[0] && j.choices[0].message;
+  return (msg && msg.content) ? msg.content : '';
+}
+function grabJSON(txt){
+  if(!txt) return null;
+  let t=String(txt).replace(/```json/gi,'```').split('```').filter(x=>x.trim()).join('\n');
+  const a=t.indexOf('{'), b=t.lastIndexOf('}');
+  if(a<0||b<a) return null;
+  try{ return JSON.parse(t.slice(a,b+1)) }catch(e){ return null }
+}
+/* 带图提问：content 用 OpenAI 通行的多模态数组格式 */
+async function askVisionJSON(prompt, dataUrls){
+  const content = [{type:'text', text:prompt}];
+  dataUrls.forEach(u => content.push({type:'image_url', image_url:{url:u}}));
+  const txt = await rawChat(cfg, [{role:'user', content}], 900, cfg.vmodel || cfg.model);
+  const j = grabJSON(txt);
+  if(!j) throw new Error('看图模型返回的不是 JSON');
+  return {data:j, via:(cfg.vmodel||cfg.model)+'（看图）'};
+}
+
+/* 统一入口：自建服务 → 内置模型 → 本地模板 */
+async function askJSON(prompt){
+  if(cfgReady()){
+    const txt = await rawChat(cfg,[{role:'user',content:prompt}]);
+    const j = grabJSON(txt);
+    if(j) return {data:j, via:'你配置的 '+cfg.model};
+    throw new Error('模型返回的不是 JSON');
+  }
+  const s = await getSample();
+  if(s){ return {data: await s.json(prompt,{modelTier:'default'}), via:'内置模型'} }
+  throw new Error('没有可用的模型');
+}
+
+/* ---------- AI 挑图与调参 ---------- */
+$('aiTune').onclick=async()=>{
+  const keep=photos.filter(p=>!p.drop);
+  if(!keep.length) return;
+  startTimer();
+  const btn=$('aiTune'); btn.disabled=true; btn.textContent='AI 正在看这些数字…';
+  $('aiWhy').textContent='';
+  const sharps=keep.map(p=>p.sharp), mx=Math.max(...sharps)||1;
+  const payload = keep.map((p,i)=>({
+    id:i, kind:p.kind==='p'?'有人':'风景',
+    clarity:+(p.sharp/mx).toFixed(2),
+    brightness:Math.round(p.luma),
+    skin_ratio:+p.skin.toFixed(3)
+  }));
+  const prompt=`你在帮一个中国用户从今天的旅行照片里挑出要发朋友圈的 6 张，并给出统一的修图参数。
+下面每一行是一张照片的<b>测量数据</b>（照片本身不会发给你，也不需要）：
+
+${JSON.stringify(payload,null,1)}
+
+规则：
+1. 从 kind 为"有人"的里面挑最多 3 张，从"风景"里挑最多 3 张。clarity 越高越清晰，brightness 是 0-255 的平均亮度（太暗或过曝都不好）。
+2. 人像参数四项各 0-60：磨皮 s、瘦脸 t、提亮 b、通透 e。<b>整组用同一套</b>，因为六张里必须看起来是同一张脸。照片普遍偏暗就把 b 调高，普遍清晰就别磨太狠。
+3. 风景参数两项各 0-60：提亮 b、鲜艳 sat。目的是让六张像同一天同一台相机拍的。风景<b>绝不做</b>磨皮瘦脸。
+4. 参数要克制，磨皮一般不超过 45，瘦脸一般不超过 25。
+5. why 用一句不超过 30 字的中文说明你为什么这么调。
+
+只返回 JSON：
+{"portrait_ids":[数字],"landscape_ids":[数字],"portrait":{"s":,"t":,"b":,"e":},"landscape":{"b":,"sat":},"why":""}`.replace(/<\/?b>/g,'');
+  try{
+    let r;
+    if(visionOn()){
+      const shots = keep.slice(0,12).map(p=>{
+        const c=document.createElement('canvas'); c.width=c.height=256;
+        c.getContext('2d').drawImage(p.thumb,0,0,256,256);
+        return c.toDataURL('image/jpeg',0.62);
+      });
+      const kb = Math.round(shots.reduce((n,u)=>n+u.length,0)*0.75/1024);
+      btn.textContent='AI 正在看这 '+shots.length+' 张…';
+      try{ r = await askVisionJSON(prompt + '\n\n下面按 id 从 0 开始的顺序附上每张照片的缩略图，请结合画面判断构图、表情、有没有闭眼或被人挡住。', shots); }
+      catch(e){ r = await askJSON(prompt); r.via += '（看图失败，退回只看数字：'+((e&&e.message)||'')+'）'; }
+      r.kb = kb;
+    } else {
+      r = await askJSON(prompt);
+    }
+    const {data,via} = r;
+    const cl=(v,d)=>{ v=Math.round(Number(v)); return isFinite(v)?Math.max(0,Math.min(60,v)):d };
+    if(data.portrait){ draft={s:cl(data.portrait.s,profile.s),t:cl(data.portrait.t,profile.t),
+      b:cl(data.portrait.b,profile.b),e:cl(data.portrait.e,profile.e)};
+      profile={...draft}; LS.set('profile',profile) }
+    if(data.landscape){ landDraft={b:cl(data.landscape.b,landProfile.b),sat:cl(data.landscape.sat,landProfile.sat)};
+      landProfile={...landDraft}; LS.set('land',landProfile) }
+    const pick=(ids,kind)=>Array.isArray(ids)? ids.map(i=>keep[i]).filter(p=>p&&p.kind===kind).slice(0,3) : [];
+    const np=pick(data.portrait_ids,'p'), nl=pick(data.landscape_ids,'l');
+    if(np.length){ selP.length=0; np.forEach(p=>selP.push(p)) }
+    if(nl.length){ selL.length=0; nl.forEach(p=>selL.push(p)) }
+    syncSliders(); paintProfSummary();
+    profPreviewSrc=null; landPreviewSrc=null; paintProfPreview(); paintLandPreview();
+    paintCurate();
+    $('aiWhy').innerHTML = `<b style="color:var(--plum)">${via}</b>：${data.why||'已调整'}　—　人像 ${profile.s}/${profile.t}/${profile.b}/${profile.e}，风景 ${landProfile.b}/${landProfile.sat}`
+      + (r.kb ? `<br><span style="color:var(--ink3)">本次上传了 ${r.kb} KB 缩略图，原图未离开本机</span>` : '');
+  }catch(e){
+    $('aiWhy').innerHTML = `<span style="color:var(--rose)">${e&&e.message?e.message:'调用失败'}</span>`;
+  }
+  btn.disabled=false; btn.textContent='让 AI 挑图并调参';
+};
+
+/* ---------- 文案 ---------- */
+let sampleNS;
+async function getSample(){
+  if(sampleNS!==undefined) return sampleNS;
+  try{ sampleNS = (window.claude&&window.claude.use) ? await window.claude.use('sample') : null }catch(e){ sampleNS=null }
+  return sampleNS;
+}
+function localCopy(sent, place, n){
+  if(!sent) return {options:[{style:'最短', text: place || '今天'}]};
+  return {options:[
+    {style:'原话优先', text: sent + (place? '。\n'+place : '')},
+    {style:'只留地点', text: sent + (place? '\n\n'+place : '')},
+    {style:'加一点时间', text: (place?place+'，':'') + sent}
+  ]};
+}
+$('goCfg2').onclick=()=>{ cfgFrom='result'; go('cfg') };
+
+/* AI 润色：拿当前这段（含你手改过的）再写三版 */
+$('polish').onclick=async()=>{
+  const cur=($('copyText').innerText||'').trim();
+  if(!cur) return;
+  startTimer();
+  const btn=$('polish'); btn.disabled=true; btn.textContent='润色中…';
+  const place=$('place').value.trim(), sent=$('saytext').value.trim();
+  const prompt=`把下面这条微信朋友圈润色一下，给三个版本。
+
+当前文案：
+${cur}
+
+${sent?('用户本人原话："'+sent+'"\n'):''}${place?('地点：'+place+'\n'):''}
+润色规则：
+1. 这是本人要发的朋友圈，不是文案作业。保留他自己的语气和用词，至少保留原文里的一个词或短语原样不动。
+2. 每版不超过 45 个汉字，可以换行。
+3. 不要用"治愈""邂逅""诗和远方""慢下来""人间天堂"这类烂俗词。不要堆形容词。不要用感叹号。最多一个 emoji，也可以没有。
+4. 三个版本要有差别：一版更短、一版更口语、一版保留最多原文。
+5. 不要写成游记或攻略，不要提到 AI 或修图。
+
+只返回 JSON：{"options":[{"style":"不超过5字的版本名","text":"文案"},{"style":"...","text":"..."},{"style":"...","text":"..."}]}`;
+  try{
+    const r=await askJSON(prompt);
+    if(r.data&&r.data.options&&r.data.options.length){
+      alts=r.data.options.slice(0,3); chosenAlt=0;
+      paintResult(r.data);
+      $('mstate').className='aibar';
+      $('mstate').innerHTML='<span class="tag">AI</span><span>由 <b>'+r.via+'</b> 润色，三个版本都来自模型</span>';
+      $('noai').hidden=true;
+    } else throw new Error('模型没有返回可用的版本');
+  }catch(e){
+    $('mstate').className='aibar fb';
+    $('mstate').innerHTML='<span class="tag">!</span><span>润色失败：'+((e&&e.message)||'未知错误')+'</span>';
+    $('noai').hidden=false;
+  }
+  btn.disabled=false; btn.textContent='AI 润色这一版';
+};
+$('toGen').onclick=gen;
+$('regen').onclick=gen;
+async function gen(){
+  startTimer();
+  const sent=$('saytext').value.trim(), place=$('place').value.trim();
+  const n=selP.length+selL.length;
+  $('mstate').textContent='模型状态：请求中…'; $('mstate').className='mstate';
+  go('result'); paintResult({options:[{style:'…',text:'正在写…'}]});
+  const inp={ date:new Date().toISOString().slice(0,10), place, photo_count:n,
+    portrait_count:selP.length, landscape_count:selL.length,
+    user_sentence:sent, tone_preference:tone, audience:'微信朋友圈' };
+  const prompt=`你在帮一个中国用户写一条微信朋友圈。信息：
+${JSON.stringify(inp,null,2)}
+
+硬性要求：
+1. user_sentence 是用户自己说的话，是这条朋友圈的灵魂。必须原样保留其中至少一个他自己用的词或短语，不要改写得更"文艺"。
+2. 每个版本不超过 45 个汉字，可以换行。语气贴近 tone_preference。
+3. 不要用"治愈""邂逅""诗和远方""慢下来""人间天堂"这类烂俗词。不要堆形容词。不要用感叹号。最多一个 emoji，也可以没有。
+4. 不要提到 AI、不要提到照片数量或修图、不要写成游记或攻略。
+5. 像本人随手打的，允许口语和不完整的句子。
+6. 如果 user_sentence 为空，三个版本都必须极简：只有地点，不要虚构任何感受。
+
+只返回 JSON：{"options":[{"style":"不超过5字的版本名","text":"文案"},{"style":"...","text":"..."},{"style":"...","text":"..."}]}`;
+  let out=null, byAI=false, err='';
+  try{
+    const r=await askJSON(prompt); out=r.data;
+    if(out&&out.options&&out.options.length){ byAI=true;
+      $('mstate').className='aibar';
+      $('mstate').innerHTML='<span class="tag">AI</span><span>由 <b>'+r.via+'</b> 写的，三个版本都来自模型</span>';
+    }
+  }catch(e){ err = (e&&e.message)?e.message:'调用失败' }
+  if(!byAI){
+    out=localCopy(sent,place,n);
+    $('mstate').className='aibar fb';
+    $('mstate').innerHTML='<span class="tag">!</span><span>'+(err||'没有可用的模型')+'</span>';
+  }
+  $('noai').hidden = byAI;
+  alts=out.options.slice(0,3); chosenAlt=0;
+  paintResult(out);
+}
+function orderedPhotos(){
+  const out=[], m=Math.max(selP.length,selL.length);
+  for(let i=0;i<m;i++){ if(selP[i])out.push(selP[i]); if(selL[i])out.push(selL[i]) }
+  return out;
+}
+function paintResult(out){
+  const g=$('grid6'); g.innerHTML='';
+  const list=orderedPhotos();
+  list.forEach(p=>{ const c=document.createElement('canvas'); c.width=300;c.height=300;
+    drawSquare(c,p,profile,landProfile); g.appendChild(c) });
+  g.style.gridTemplateColumns='repeat('+(list.length<=4?2:3)+',1fr)';
+  const a=$('avatar'); a.innerHTML='';
+  if(list[0]){ const c=document.createElement('canvas'); c.width=64;c.height=64; drawSquare(c,list[0],profile,landProfile); a.appendChild(c) }
+  $('pvWhen').textContent='刚刚'+($('place').value?' · '+$('place').value:'');
+  $('copyText').textContent=alts.length?alts[chosenAlt].text:(out.options[0].text||'');
+  const box=$('alts'); box.innerHTML='';
+  alts.forEach((x,i)=>{
+    const b=document.createElement('button'); b.className='alt'; b.type='button';
+    b.setAttribute('aria-pressed', i===chosenAlt);
+    b.innerHTML='<em>'+(x.style||('版本 '+(i+1)))+'</em>'+String(x.text).replace(/\n/g,'<br>');
+    b.onclick=()=>{ startTimer(); chosenAlt=i; $('copyText').textContent=x.text;
+      [...box.children].forEach(c=>c.setAttribute('aria-pressed',c===b)) };
+    box.appendChild(b);
+  });
+}
+
+/* ---------- 保存 ---------- */
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+let outFiles=[];
+function toBlob(cv){ return new Promise(res=>cv.toBlob(res,'image/jpeg',0.92)) }
+$('toSave').onclick=async()=>{
+  startTimer(); go('save');
+  $('finalTime').textContent=elapsed+'″';
+  $('copyText2').textContent=currentText();
+  const row=$('saverow'); row.innerHTML='';
+  outBlobs=[]; outFiles=[];
+  const list=orderedPhotos();
+  const stamp=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  for(let i=0;i<list.length;i++){
+    const c=document.createElement('canvas'); c.width=1280;c.height=1280;
+    drawSquare(c,list[i],profile,landProfile);
+    const blob=await toBlob(c);
+    if(blob){
+      const name=`旅图发发_${stamp}_${String(i+1).padStart(2,'0')}.jpg`;
+      outFiles.push(new File([blob], name, {type:'image/jpeg'}));
+      const url=URL.createObjectURL(blob);
+      outBlobs.push(url);
+      const f=document.createElement('figure');
+      f.innerHTML=`<img src="${url}" alt="成片 ${i+1}"><figcaption>${i+1} / ${list.length}　长按存储</figcaption>`;
+      row.appendChild(f);
+    }
+    await new Promise(r=>setTimeout(r));
+  }
+  $('shareN').textContent=outFiles.length;
+  /* 先探一次能力，按钮文案就说实话 */
+  const canShare = !!(navigator.canShare && outFiles.length && navigator.canShare({files:outFiles}));
+  $('saveHow').innerHTML = canShare
+    ? '会打开系统分享面板，选<b style="color:var(--ink)">「存储 '+outFiles.length+' 张图片」</b>，一次全部进相册。'
+    : (isIOS
+      ? '这个浏览器不给网页调系统分享。展开下面逐张<b style="color:var(--ink)">长按 → 存储到照片</b>。'
+      : '会尝试系统分享；不行就展开下面逐张保存。');
+  if(!canShare) $('fallbackBox').open=true;
+  applied += selP.length; LS.set('applied', applied); paintProfSummary();
+  stopTimer();
+};
+
+/* 存到相册：分享面板 → downloads → 长按兜底 */
+async function shareAll(btn){
+  if(!outFiles.length) return;
+  const label=btn.textContent;
+  if(navigator.canShare && navigator.canShare({files:outFiles})){
+    try{
+      await navigator.share({files:outFiles, title:'旅图发发', text:''});
+      btn.textContent='已交给系统 ✓'; return;
+    }catch(e){
+      if(e && e.name==='AbortError'){ btn.textContent=label; return }
+    }
+  }
+  let dl=null;
+  try{ dl = window.claude&&window.claude.use ? await window.claude.use('downloads') : null }catch(e){}
+  if(dl){
+    btn.textContent='保存中…';
+    for(const f of outFiles){
+      try{ await dl.save({filename:f.name, data:f}) }catch(e){}
+    }
+    btn.textContent='已保存到文件 ✓'; return;
+  }
+  $('fallbackBox').open=true;
+  $('fallbackBox').scrollIntoView({behavior:'smooth',block:'center'});
+  btn.textContent='请在下面逐张长按保存';
+}
+$('shareAll').onclick=()=>shareAll($('shareAll'));
+$('shareAll2').onclick=()=>shareAll($('shareAll2'));
+function currentText(){
+  const t=($('copyText').innerText||'').trim();
+  return t || (alts.length?alts[chosenAlt].text:'');
+}
+async function copyCopy(btn){
+  const t=currentText();
+  if(!t) return;
+  try{ await navigator.clipboard.writeText(t); btn.textContent='已复制 ✓'; }
+  catch(e){
+    /* Safari 偶尔拒绝 clipboard API：退回选中文本让用户手动复制 */
+    try{
+      const ta=document.createElement('textarea'); ta.value=t;
+      ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta);
+      ta.select(); ta.setSelectionRange(0,t.length);
+      const ok=document.execCommand('copy'); document.body.removeChild(ta);
+      btn.textContent = ok ? '已复制 ✓' : '复制失败，请长按上面的文字手动复制';
+    }catch(e2){ btn.textContent='复制失败，请长按上面的文字手动复制' }
+  }
+  setTimeout(()=>{ btn.textContent = btn.id==='copyHere' ? '复制这段文案' : '复制文案' }, 2200);
+}
+$('copyBtn').onclick=()=>copyCopy($('copyBtn'));
+$('copyHere').onclick=()=>copyCopy($('copyHere'));
+$('restart').onclick=()=>{
+  stopTimer(); elapsed=0;
+  $('saytext').value=''; alts=[]; outBlobs=[];
+  $('shareAll').textContent='存 6 张到相册'; $('shareAll2').textContent='存到相册';
+  $('copyBtn').textContent='复制文案'; $('copyHere').textContent='复制这段文案';
+  outFiles=[];
+  go('start');
+};
+
+/* ---------- 启动 ---------- */
+paintProfSummary();
+syncSliders();
+paintProfPreview();
+paintLandPreview();
+</script>
