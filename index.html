@@ -293,6 +293,13 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;
   color:var(--plum-deep);font-family:var(--mono);font-size:11px;display:grid;place-items:center;font-weight:500}
 .hand b{font-size:14px;display:block;margin-bottom:3px;font-weight:600;color:var(--ink);letter-spacing:-.018em}
 .hand p{margin:0;font-size:12.2px;color:var(--ink3);line-height:1.55}
+.keywrap{position:relative}
+.keywrap .inp{padding-right:64px}
+.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--plum-soft);
+  border:0;border-radius:999px;color:var(--plum-deep);font-size:12px;font-weight:600;padding:7px 12px;
+  cursor:pointer;font-family:var(--font)}
+.keywarn{margin-top:8px;font-size:12px;line-height:1.55;color:var(--rose)}
+.keywarn.ok{color:var(--plum-deep)}
 .switchrow{display:flex;gap:14px;align-items:flex-start;margin-top:18px;border:1px solid var(--edge);
   border-radius:20px;padding:15px 16px;background:var(--glass);cursor:pointer;
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--soft)}
@@ -419,8 +426,14 @@ details summary{list-style:none;padding:12px 0;font-size:12.5px;color:var(--plum
       <input class="inp" id="cfgUrl" placeholder="https://api.deepseek.com/chat/completions" autocomplete="off" spellcheck="false">
       <div class="eyebrow">模型名称</div>
       <input class="inp" id="cfgModel" placeholder="deepseek-chat" autocomplete="off" spellcheck="false">
-      <div class="eyebrow">API Key <b>仅保存在当前设备</b></div>
-      <input class="inp" id="cfgKey" type="password" placeholder="请输入 API Key" autocomplete="off" spellcheck="false">
+      <div class="eyebrow">API Key <b id="keyPeek">仅保存在当前设备</b></div>
+      <div class="keywrap">
+        <input class="inp" id="cfgKey" type="password" placeholder="sk-…" name="luojiao-token"
+               autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+               data-1p-ignore data-lpignore="true" data-form-type="other">
+        <button type="button" class="eye" id="keyEye" aria-label="显示或隐藏">显示</button>
+      </div>
+      <div id="keyWarn" class="keywarn" hidden></div>
 
       <div class="eyebrow">看图模型 <b>留空则用上面那个</b></div>
       <input class="inp" id="cfgVModel" placeholder="支持图片输入的模型名" autocomplete="off" spellcheck="false">
@@ -1159,10 +1172,38 @@ let cfg = LS.get('api', {url:'', model:'', key:'', vmodel:'', vision:false});
 function cfgReady(){ return !!(cfg.url && cfg.model && cfg.key) }
 $('cfgUrl').value=cfg.url||''; $('cfgModel').value=cfg.model||''; $('cfgKey').value=cfg.key||'';
 $('cfgVModel').value=cfg.vmodel||''; $('cfgVision').checked=!!cfg.vision;
-$('toCfg').onclick=()=>{ cfgFrom=cur; go('cfg') };
+$('keyEye').onclick=()=>{
+  const i=$('cfgKey');
+  const show = i.type==='password';
+  i.type = show ? 'text' : 'password';
+  $('keyEye').textContent = show ? '隐藏' : '显示';
+};
+/* 粘贴常带空格换行，iOS 还可能自动填进来别的东西 —— 这里当场告诉用户填的是什么 */
+function checkKey(){
+  const raw=$('cfgKey').value;
+  const v=raw.replace(/\s+/g,'');
+  if(v!==raw) $('cfgKey').value=v;
+  const w=$('keyWarn');
+  if(!v){ w.hidden=true; return }
+  w.hidden=false;
+  if(!v.startsWith('sk-')){
+    w.className='keywarn';
+    w.textContent='这不像一个 API Key：它应该以 sk- 开头。当前填的是「'+v.slice(0,4)+'…'+v.slice(-4)+'」，共 '+v.length+' 位。如果是 iOS 自动填了密码，请全选删掉重新粘贴。';
+  } else if(v.length<20){
+    w.className='keywarn';
+    w.textContent='看起来没粘完整，只有 '+v.length+' 位。';
+  } else {
+    w.className='keywarn ok';
+    w.textContent='格式看着对：sk-…'+v.slice(-4)+'，共 '+v.length+' 位。';
+  }
+}
+$('cfgKey').addEventListener('input',checkKey);
+$('cfgKey').addEventListener('paste',()=>setTimeout(checkKey,0));
+$('toCfg').onclick=()=>{ cfgFrom=cur; checkKey(); go('cfg') };
 $('cfgSave').onclick=()=>{
   cfg={url:$('cfgUrl').value.trim(), model:$('cfgModel').value.trim(), key:$('cfgKey').value.trim(),
        vmodel:$('cfgVModel').value.trim(), vision:$('cfgVision').checked};
+  cfg.key = cfg.key.replace(/\s+/g,'');
   LS.set('api',cfg);
   $('cfgState').className='mstate live';
   $('cfgState').textContent = cfgReady()
@@ -1170,7 +1211,8 @@ $('cfgSave').onclick=()=>{
     : '已保存。信息不全，会继续用内置模型。';
 };
 $('cfgTest').onclick=async()=>{
-  const c={url:$('cfgUrl').value.trim(), model:$('cfgModel').value.trim(), key:$('cfgKey').value.trim()};
+  const c={url:$('cfgUrl').value.trim(), model:$('cfgModel').value.trim(),
+           key:$('cfgKey').value.replace(/\s+/g,'')};
   if(!c.url||!c.model||!c.key){ $('cfgState').className='mstate fb'; $('cfgState').textContent='三项都要填。'; return }
   $('cfgState').className='mstate'; $('cfgState').textContent='正在连接…';
   try{
