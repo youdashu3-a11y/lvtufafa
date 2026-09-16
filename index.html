@@ -1288,23 +1288,38 @@ function grabJSON(txt){
 async function askVisionJSON(prompt, dataUrls){
   const content = [{type:'text', text:prompt}];
   dataUrls.forEach(u => content.push({type:'image_url', image_url:{url:u}}));
-  const txt = await rawChat(cfg, [{role:'user', content}], 1400, cfg.vmodel || cfg.model, true);
-  const j = grabJSON(txt);
-  if(!j) throw notJSON(txt);
-  return {data:j, via:(cfg.vmodel||cfg.model)+'（看图）'};
+  const m = cfg.vmodel || cfg.model;
+  return {data: await chatJSON([{role:'user', content}], m), via:m+'（看图）'};
 }
 
 /* 统一入口：自建服务 → 内置模型 → 本地模板 */
+const JSON_SYS = '你是一个只输出 JSON 的接口。无论问题是什么，你的回答第一个字符必须是 {，最后一个字符必须是 }。'
+  + '禁止输出任何解释、思考过程、开场白、markdown 代码围栏。禁止用 "Let me" 或 "好的" 之类的话开头。'
+  + 'JSON 里所有中文字段（比如 why）必须用简体中文填写。';
+
+/* 拿 JSON：先正常问；模型没照做就把它的错误答案回敬给它，要求重出一次 */
+async function chatJSON(messages, model){
+  const msgs = [{role:'system', content:JSON_SYS}].concat(messages);
+  const txt = await rawChat(cfg, msgs, 1400, model, true);
+  let j = grabJSON(txt);
+  if(j) return j;
+  const fix = msgs.concat([
+    {role:'assistant', content:String(txt).slice(0,600)},
+    {role:'user', content:'你刚才没有只返回 JSON。现在重新回答：只输出那个 JSON 对象本身，第一个字符是 {，最后一个字符是 }，不要任何其他文字。'}
+  ]);
+  const txt2 = await rawChat(cfg, fix, 1400, model, true);
+  j = grabJSON(txt2);
+  if(j) return j;
+  throw notJSON(txt2 || txt);
+}
+
 function notJSON(txt){
   const t=String(txt||'').replace(/\s+/g,' ').trim();
   return new Error('模型没有返回 JSON。它实际回的是：「'+(t.slice(0,110)||'(空)')+(t.length>110?'…':'')+'」');
 }
 async function askJSON(prompt){
   if(cfgReady()){
-    const txt = await rawChat(cfg,[{role:'user',content:prompt}],1400,null,true);
-    const j = grabJSON(txt);
-    if(j) return {data:j, via:'你配置的 '+cfg.model};
-    throw notJSON(txt);
+    return {data: await chatJSON([{role:'user',content:prompt}], null), via:'你配置的 '+cfg.model};
   }
   const s = await getSample();
   if(s){ return {data: await s.json(prompt,{modelTier:'default'}), via:'内置模型'} }
@@ -1337,7 +1352,7 @@ ${JSON.stringify(payload,null,1)}
 4. 参数要克制，磨皮一般不超过 45，瘦脸一般不超过 25。
 5. why 用一句不超过 30 字的中文说明你为什么这么调。
 
-只返回 JSON：
+现在直接输出 JSON，第一个字符必须是 {。不要写"Let me"、不要列分析过程、不要代码围栏。why 用简体中文，不超过 30 字。
 {"portrait_ids":[数字],"landscape_ids":[数字],"portrait":{"s":,"t":,"b":,"e":},"landscape":{"b":,"sat":},"why":""}`.replace(/<\/?b>/g,'');
   try{
     let r;
@@ -1414,7 +1429,8 @@ ${sent?('用户本人原话："'+sent+'"\n'):''}${place?('地点：'+place+'\n')
 4. 三个版本要有差别：一版更短、一版更口语、一版保留最多原文。
 5. 不要写成游记或攻略，不要提到 AI 或修图。
 
-只返回 JSON：{"options":[{"style":"不超过5字的版本名","text":"文案"},{"style":"...","text":"..."},{"style":"...","text":"..."}]}`;
+现在直接输出 JSON，第一个字符必须是 {。不要写开场白、不要代码围栏。
+{"options":[{"style":"不超过5字的版本名","text":"文案"},{"style":"...","text":"..."},{"style":"...","text":"..."}]}`;
   try{
     const r=await askJSON(prompt);
     if(r.data&&r.data.options&&r.data.options.length){
@@ -1453,7 +1469,8 @@ ${JSON.stringify(inp,null,2)}
 5. 像本人随手打的，允许口语和不完整的句子。
 6. 如果 user_sentence 为空，三个版本都必须极简：只有地点，不要虚构任何感受。
 
-只返回 JSON：{"options":[{"style":"不超过5字的版本名","text":"文案"},{"style":"...","text":"..."},{"style":"...","text":"..."}]}`;
+现在直接输出 JSON，第一个字符必须是 {。不要写开场白、不要代码围栏。
+{"options":[{"style":"不超过5字的版本名","text":"文案"},{"style":"...","text":"..."},{"style":"...","text":"..."}]}`;
   let out=null, byAI=false, err='';
   try{
     const r=await askJSON(prompt); out=r.data;
