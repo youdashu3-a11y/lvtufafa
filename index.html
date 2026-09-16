@@ -1216,7 +1216,7 @@ $('cfgTest').onclick=async()=>{
   if(!c.url||!c.model||!c.key){ $('cfgState').className='mstate fb'; $('cfgState').textContent='三项都要填。'; return }
   $('cfgState').className='mstate'; $('cfgState').textContent='正在连接…';
   try{
-    const r = await rawChat(c, [{role:'user',content:'只回复两个字：可用'}], 24);
+    const r = await rawChat(c, [{role:'user',content:'只回复两个字：可用'}], 64);
     $('cfgState').className='mstate live';
     $('cfgState').textContent='连接成功，模型回了：'+String(r).slice(0,40);
   }catch(e){
@@ -1225,47 +1225,86 @@ $('cfgTest').onclick=async()=>{
   }
 };
 function visionOn(){ return !!(cfgReady() && cfg.vision) }
-async function rawChat(c, messages, maxTokens, modelOverride){
-  let res;
-  try{
-    res = await fetch(c.url,{ method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+c.key},
-      body: JSON.stringify({ model:modelOverride||c.model, messages, temperature:0.8, max_tokens:maxTokens||700 }) });
-  }catch(err){
-    throw new Error('网络请求被拦截或无法送达。如果这个页面跑在 claude.ai 的沙箱里，外部接口会被安全策略挡掉——把这份 HTML 放到自己的服务器上就能正常调用。');
-  }
+async function rawChat(c, messages, maxTokens, modelOverride, wantJSON){
+  const send = async (withFormat)=>{
+    const body = { model:modelOverride||c.model, messages, temperature:0.8, max_tokens:maxTokens||1400 };
+    if(withFormat) body.response_format = {type:'json_object'};
+    let res;
+    try{
+      res = await fetch(c.url,{ method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+c.key},
+        body: JSON.stringify(body) });
+    }catch(err){
+      throw new Error('网络请求被拦截或无法送达。请确认页面跑在你自己托管的地址上，且接口地址填的是完整的 https:// 开头的地址。');
+    }
+    return res;
+  };
+  /* 先请服务端强制输出 JSON；它不支持这个参数就退回普通请求 */
+  let res = await send(!!wantJSON);
+  if(wantJSON && (res.status===400 || res.status===422)) res = await send(false);
   if(!res.ok){
-    let t=''; try{ t=(await res.text()).slice(0,160) }catch(e){}
+    let t=''; try{ t=(await res.text()).slice(0,200) }catch(e){}
     throw new Error('HTTP '+res.status+(t?(' · '+t):''));
   }
   const j = await res.json();
   const msg = j && j.choices && j.choices[0] && j.choices[0].message;
-  return (msg && msg.content) ? msg.content : '';
+  /* 有些模型把思考过程放 reasoning_content，答案仍在 content */
+  let out = (msg && (msg.content || msg.reasoning_content)) || '';
+  if(!out && j && j.choices && j.choices[0] && j.choices[0].text) out = j.choices[0].text;
+  if(!out) throw new Error('接口返回里没有文字内容：'+JSON.stringify(j).slice(0,160));
+  return out;
 }
 function grabJSON(txt){
   if(!txt) return null;
-  let t=String(txt).replace(/```json/gi,'```').split('```').filter(x=>x.trim()).join('\n');
-  const a=t.indexOf('{'), b=t.lastIndexOf('}');
-  if(a<0||b<a) return null;
-  try{ return JSON.parse(t.slice(a,b+1)) }catch(e){ return null }
+  const s0=String(txt).trim();
+  const tries=[];
+  tries.push(s0);
+  /* 去掉 ``` 代码围栏 */
+  const fence=s0.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if(fence) tries.push(fence[1]);
+  /* 括号配平：从第一个 { 开始数，配平即止，忽略字符串里的括号 */
+  const start=s0.indexOf('{');
+  if(start>=0){
+    let depth=0, inStr=false, esc=false;
+    for(let i=start;i<s0.length;i++){
+      const ch=s0[i];
+      if(inStr){
+        if(esc) esc=false;
+        else if(ch==='\\') esc=true;
+        else if(ch==='"') inStr=false;
+        continue;
+      }
+      if(ch==='"') inStr=true;
+      else if(ch==='{') depth++;
+      else if(ch==='}'){ depth--; if(depth===0){ tries.push(s0.slice(start,i+1)); break } }
+    }
+  }
+  for(const t of tries){
+    try{ const v=JSON.parse(t.trim()); if(v && typeof v==='object') return v }catch(e){}
+  }
+  return null;
 }
 /* 带图提问：content 用 OpenAI 通行的多模态数组格式 */
 async function askVisionJSON(prompt, dataUrls){
   const content = [{type:'text', text:prompt}];
   dataUrls.forEach(u => content.push({type:'image_url', image_url:{url:u}}));
-  const txt = await rawChat(cfg, [{role:'user', content}], 900, cfg.vmodel || cfg.model);
+  const txt = await rawChat(cfg, [{role:'user', content}], 1400, cfg.vmodel || cfg.model, true);
   const j = grabJSON(txt);
-  if(!j) throw new Error('看图模型返回的不是 JSON');
+  if(!j) throw notJSON(txt);
   return {data:j, via:(cfg.vmodel||cfg.model)+'（看图）'};
 }
 
 /* 统一入口：自建服务 → 内置模型 → 本地模板 */
+function notJSON(txt){
+  const t=String(txt||'').replace(/\s+/g,' ').trim();
+  return new Error('模型没有返回 JSON。它实际回的是：「'+(t.slice(0,110)||'(空)')+(t.length>110?'…':'')+'」');
+}
 async function askJSON(prompt){
   if(cfgReady()){
-    const txt = await rawChat(cfg,[{role:'user',content:prompt}]);
+    const txt = await rawChat(cfg,[{role:'user',content:prompt}],1400,null,true);
     const j = grabJSON(txt);
     if(j) return {data:j, via:'你配置的 '+cfg.model};
-    throw new Error('模型返回的不是 JSON');
+    throw notJSON(txt);
   }
   const s = await getSample();
   if(s){ return {data: await s.json(prompt,{modelTier:'default'}), via:'内置模型'} }
